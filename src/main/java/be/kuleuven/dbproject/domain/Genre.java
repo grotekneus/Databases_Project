@@ -14,4 +14,19 @@ public class Genre {
     @Column
     private String description;
 
+    public Genre(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getGenreID() {
+        return GenreID;
+    }
 }

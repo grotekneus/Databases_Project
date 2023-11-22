@@ -17,4 +17,24 @@ public class Purchase {
     @Id
     @GeneratedValue
     private int purchaseID;
+
+    public Purchase() {
+    }
+
+    public ItemType getItemType() {
+        return itemType;
+    }
+
+
+    public int getCustomerID() {
+        return customerID;
+    }
+
+    public int getItemID() {
+        return itemID;
+    }
+
+    public int getPurchaseID() {
+        return purchaseID;
+    }
 }

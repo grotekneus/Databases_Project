@@ -15,4 +15,19 @@ public class GameInstance {
     private int gameInstanceID;
     @Column
     private int museumID;
+
+    public GameInstance() {
+    }
+
+    public int getGameID() {
+        return gameID;
+    }
+
+    public int getGameInstanceID() {
+        return gameInstanceID;
+    }
+
+    public int getMuseumID() {
+        return museumID;
+    }
 }

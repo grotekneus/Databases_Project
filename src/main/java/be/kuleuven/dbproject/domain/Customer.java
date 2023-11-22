@@ -17,4 +17,38 @@ public class Customer {
     private String address;
     @Column
     private String email;
+
+    public Customer(String fullName, String address, String email) {
+        this.fullName = fullName;
+        this.address = address;
+        this.email = email;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getCustomerID() {
+        return customerID;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

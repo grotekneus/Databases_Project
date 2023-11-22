@@ -18,4 +18,29 @@ public class Console {
         System.out.println("Bezig met het bezigen van het opslaan van student " + this);
     }
 
+    public Console(String name, LocalDate year) {
+        this.name = name;
+        this.year = year;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getConsoleID() {
+        return consoleID;
+    }
+
+    public LocalDate getYear() {
+        return year;
+    }
+
+    public void setYear(LocalDate year) {
+        this.year = year;
+    }
+
 }
