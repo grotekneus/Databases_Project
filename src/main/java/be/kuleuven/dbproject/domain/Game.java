@@ -1,19 +1,21 @@
 package be.kuleuven.dbproject.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 public class Game {
     @Column
     private String name;
-    @Column
-    private int consoleID;
-    @Column
-    private int genreID;
+
+    @ManyToOne
+    @JoinColumn
+    private Console console;
+
+    @ManyToOne
+    @JoinColumn
+
+    private Genre genre;
     @Column
     private int year;
     @Column
@@ -41,12 +43,12 @@ public class Game {
         return year;
     }
 
-    public int getConsoleID() {
-        return consoleID;
+    public Console getConsoleID() {
+        return console;
     }
 
-    public int getGenreID() {
-        return genreID;
+    public Genre getGenreID() {
+        return genre;
     }
 
     public int getGameID() {

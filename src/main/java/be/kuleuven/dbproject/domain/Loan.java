@@ -1,17 +1,17 @@
 package be.kuleuven.dbproject.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 public class Loan {
-    @Column
+    @ManyToOne
+    @JoinColumn
+    private Game game;
+    @ManyToOne
+    @JoinColumn
+    private Customer customer;
     @Id
-    private int gameID;
-    @Column
-    private int customerID;
     @Column
     private LocalDate date;
     @Column
@@ -22,12 +22,12 @@ public class Loan {
         this.returned = returned;
     }
 
-    public int getGameID() {
-        return gameID;
+    public Game getGame() {
+        return game;
     }
 
-    public int getCustomerID() {
-        return customerID;
+    public Customer getCustomerID() {
+        return customer;
     }
 
     public LocalDate getDate() {

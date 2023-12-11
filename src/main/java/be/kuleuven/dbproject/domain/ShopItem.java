@@ -1,9 +1,6 @@
 package be.kuleuven.dbproject.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class ShopItem {
@@ -17,8 +14,10 @@ public class ShopItem {
     @Id
     @GeneratedValue
     private int itemID;
-    @Column
-    private int museumID;
+    @ManyToOne
+    @JoinColumn
+
+    private Museum museum;
 
     public ShopItem(String name, float price) {
         this.name = name;
@@ -53,7 +52,7 @@ public class ShopItem {
         return itemID;
     }
 
-    public int getMuseumID() {
-        return museumID;
+    public Museum getMuseumID() {
+        return museum;
     }
 }

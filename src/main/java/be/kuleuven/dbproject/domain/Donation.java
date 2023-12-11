@@ -1,15 +1,16 @@
 package be.kuleuven.dbproject.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 public class Donation   {
-    @Column
+
+
+    @ManyToOne
+    @JoinColumn
+    private Customer customer;
     @Id
-    private int customerID;
     @Column
     private float moneyDonated;
     @Column
@@ -28,8 +29,8 @@ public class Donation   {
         this.moneyDonated = moneyDonated;
     }
 
-    public int getCustomerID() {
-        return customerID;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public LocalDate getDate() {

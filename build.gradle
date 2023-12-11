@@ -13,6 +13,7 @@ javafx {
 }
 
 dependencies {
+    implementation group: 'org.lightcouch', name: 'lightcouch', version: '0.2.0'
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.32.3.2'
     implementation group: 'com.zsoltfabok', name: 'sqlite-dialect', version: '1.0'
     implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.4.23.Final'

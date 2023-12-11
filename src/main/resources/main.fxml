@@ -11,9 +11,14 @@
             <Font size="24.0" />
          </font>
       </Text>
-      <Button fx:id="btnBeheerScherm1" layoutX="46.0" layoutY="69.0" mnemonicParsing="false" text="Beheer Scherm 1" />
+      <Button fx:id="btnBeheerScherm1" layoutX="111.0" layoutY="69.0" mnemonicParsing="false" text="Beheer Scherm 1" />
       <Button fx:id="btnBeheerScherm2" layoutX="224.0" layoutY="68.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="151.0" text="Beheer Scherm 2" />
       <Button fx:id="btnConfigAttaches" layoutX="206.0" layoutY="173.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="151.0" text="Beheer Config Attaches" />
       <Label layoutX="138.0" layoutY="119.0" text="+ andere dingen?? " />
+      <Button fx:id="Customers" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" text="Customers" />
+      <Button fx:id="Donations" layoutX="14.0" layoutY="82.0" mnemonicParsing="false" text="Donations" />
+      <Button fx:id="Games" layoutX="14.0" layoutY="124.0" mnemonicParsing="false" text="Games" />
+      <Button fx:id="ShopItems" layoutX="14.0" layoutY="43.0" mnemonicParsing="false" text="ShopItems" />
+      <Button fx:id="Museums" layoutX="14.0" layoutY="160.0" mnemonicParsing="false" text="Museums" />
    </children>
 </AnchorPane>

@@ -1,14 +1,12 @@
 package be.kuleuven.dbproject.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Purchase {
-    @Column
-    private int customerID;
+    @ManyToOne
+    @JoinColumn(name="customerId")
+    private Customer customer;
     @Column
     private ItemType itemType;
     @Column
@@ -26,8 +24,8 @@ public class Purchase {
     }
 
 
-    public int getCustomerID() {
-        return customerID;
+    public Customer getCustomerID() {
+        return customer;
     }
 
     public int getItemID() {
