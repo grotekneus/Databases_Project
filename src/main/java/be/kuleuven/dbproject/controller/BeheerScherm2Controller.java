@@ -102,6 +102,7 @@ public class BeheerScherm2Controller {
                 break;
 
         }
+
         // TODO verwijderen en "echte data" toevoegen!
         int colIndex = 0;
         for(var colName : colNames) {

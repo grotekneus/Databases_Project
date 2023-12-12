@@ -1,11 +1,14 @@
 package be.kuleuven.dbproject;
 
+import be.kuleuven.dbproject.controller.ProjectMainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import java.io.File;
 
@@ -23,11 +26,15 @@ public class ProjectMain extends Application {
     public static Stage getRootStage() {
         return rootStage;
     }
+    private static EntityManager entityManager;
 
     @Override
     public void start(Stage stage) throws Exception {
         rootStage = stage;
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("main.fxml"));
+        ProjectMainController mainController = new ProjectMainController(entityManager);
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("main.fxml"));
+        loader.setController(mainController);
+        var root = (AnchorPane) loader.load();
 
         Scene scene = new Scene(root);
 
@@ -51,7 +58,7 @@ public class ProjectMain extends Application {
         }
         System.out.println("Bootstrapping JPA/Hibernate...");
         var sessionFactory = Persistence.createEntityManagerFactory("be.kuleuven.dbproject.domain");
-        var entityManager = sessionFactory.createEntityManager();
+        entityManager = sessionFactory.createEntityManager();
 
         System.out.println("Bootstrapping Repository...");
 

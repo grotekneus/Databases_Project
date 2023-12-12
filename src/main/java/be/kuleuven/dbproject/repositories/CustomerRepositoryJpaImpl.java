@@ -20,4 +20,10 @@ public class CustomerRepositoryJpaImpl {
         var root = query.from(Customer.class); //blijkbaar selecteerd hij default de hele klasse
         return entityManager.createQuery(query).getResultList();
     }
+
+    public void addCustomer(Customer c) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(c);
+        entityManager.getTransaction().commit();
+    }
 }
