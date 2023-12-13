@@ -17,7 +17,8 @@ public class Loan {
     @Column
     private LocalDate returned;
 
-    public Loan(LocalDate date, LocalDate returned) {
+    public Loan(Customer customer, LocalDate date, LocalDate returned) {
+        this.customer = customer;
         this.date = date;
         this.returned = returned;
     }
@@ -26,7 +27,7 @@ public class Loan {
         return game;
     }
 
-    public Customer getCustomerID() {
+    public Customer getCustomer() {
         return customer;
     }
 

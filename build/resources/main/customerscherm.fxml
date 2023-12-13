@@ -22,7 +22,6 @@
             </font>
         </Text>
         <Button fx:id="btnAdd" layoutX="16.0" layoutY="304.0" mnemonicParsing="false" text="Add" />
-        <Button fx:id="btnAddToCustomer" layoutX="380" layoutY="304.0" mnemonicParsing="false" text="Add to customer" />
         <Button fx:id="btnEdit" layoutX="60.0" layoutY="304.0" mnemonicParsing="false" text="Edit" />
         <Button fx:id="btnShowLoans" layoutX="300.0" layoutY="304.0" mnemonicParsing="false" text="View Loans" />
         <Button fx:id="btnShowDonations" layoutX="200.0" layoutY="304.0" mnemonicParsing="false" text="View Donations" />
