@@ -201,6 +201,11 @@ public class CustomerSchermController implements Controller {
             if(result.isPresent()){
                 if(result.get() == ButtonType.APPLY){
                     String[] s = controller.getInput();
+                    for(String string : s){
+                        if(string==""){
+                            throw new IOException();
+                        }
+                    }
                     switch(state){
                         case Customers:
                             Customer customer = new Customer(s[0],s[1],s[2]);
@@ -224,7 +229,8 @@ public class CustomerSchermController implements Controller {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            showAlert();
+            add();
         }
     }
 
