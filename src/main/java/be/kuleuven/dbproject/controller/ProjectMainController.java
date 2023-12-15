@@ -59,7 +59,7 @@ public class ProjectMainController {
                 break;
             case "admin":
                 controller = new AdminSchermController(entityManager);
-
+                break;
             case "museum":
                 controller = new MuseumSchermController(entityManager);
                 break;

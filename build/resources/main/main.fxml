@@ -23,9 +23,7 @@
       </VBox>
       <VBox layoutX="400.0" layoutY="60.0" spacing="10">
          <children>
-            <Button fx:id="btnBeheerScherm1" prefHeight="35.0" prefWidth="200.0" text="Beheer Scherm 1" />
             <Button fx:id="btnAdmin" prefHeight="35.0" prefWidth="200.0" text="admin" />
-
          </children>
       </VBox>
    </children>

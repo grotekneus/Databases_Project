@@ -72,6 +72,7 @@ public class CustomerSchermController implements Controller {
                 var stage = (Stage) btnClose.getScene().getWindow();
                 stage.close();
             }
+            selectedCustomer = null;
         });
 
         tblConfigs.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {

@@ -128,7 +128,7 @@ public class GameSchermController implements Controller {
                             gameRepo.changeGameValue(Integer.parseInt(s[0]),selectedGame);
                         } catch(NumberFormatException e) {
                             showAlert();
-                            add();
+                            edit();
                         }
                         showGames();
                     }
@@ -141,7 +141,7 @@ public class GameSchermController implements Controller {
                             gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]).getMuseumID(),selectedGInstance);
                         } catch(NumberFormatException e) {
                             showAlert();
-                            add();
+                            edit();
                         }
                         showGameInstances();
                     }
@@ -180,7 +180,7 @@ public class GameSchermController implements Controller {
                             if(s[0] == ""){
                                 throw new NumberFormatException();
                             }
-                            Game game = new Game(s[2],cgRepo.getConsole(s[0]),cgRepo.getGenre(s[1]),Integer.parseInt(s[3]),Float.parseFloat(s[3]));
+                            Game game = new Game(s[2],cgRepo.getConsole(s[0]),cgRepo.getGenre(s[1]),Integer.parseInt(s[3]),Float.parseFloat(s[4]));
                             gameRepo.addGame(game);
                         } catch(NumberFormatException e) {
                             showAlert();
