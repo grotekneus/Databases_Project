@@ -56,7 +56,7 @@ public class MuseumSchermController implements Controller {
 
     public void initialize() {
         this.state = State.Museums;
-        btnSearchMuseum.setOnAction(e->searchMuseums());
+        btnSearchMuseum.setOnAction(e->searchMuseum());
         btnSearchGame.setOnAction(e -> searchGames());
         btnRevenue.setOnAction(e -> edditRevenue());
         btnAdd.setOnAction(e -> {add();});
@@ -82,7 +82,7 @@ public class MuseumSchermController implements Controller {
         showMuseums();
     }
 
-    private void searchMuseums(){
+    private void searchMuseum(){
         try {
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Search Museums");
@@ -93,9 +93,9 @@ public class MuseumSchermController implements Controller {
 
             result.ifPresent(address -> {
                 // Perform the search based on the entered address
-                List<Museum> matchingMuseums = museumRepo.getMuseumsByAddress(address);
+                Museum matchingMuseum = museumRepo.getMuseumByAddress(address);
 
-                if (matchingMuseums.isEmpty()) {
+                if (matchingMuseum==null) {
                     // No matching museums found, display a message or handle this case
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Search Result");
@@ -105,9 +105,7 @@ public class MuseumSchermController implements Controller {
                 } else {
                     // Select the matching museum in the table
                     tblConfigs.getSelectionModel().clearSelection();
-                    for (Museum museum : matchingMuseums) {
-                        tblConfigs.getSelectionModel().select(museum);
-                    }
+                    tblConfigs.getSelectionModel().select(matchingMuseum);
                 }
             });
         } catch (Exception e) {

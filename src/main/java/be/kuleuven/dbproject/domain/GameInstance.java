@@ -16,8 +16,8 @@ public class GameInstance {
     private int museumID;
 
     public GameInstance(int gameID, int museumID) {
-        this.gameID=gameID;
-        this.museumID=museumID;
+        this.gameID = gameID;
+        this.museumID = museumID;
     }
 
     public int getGameID() {
@@ -30,5 +30,9 @@ public class GameInstance {
 
     public int getMuseumID() {
         return museumID;
+    }
+
+    public void setMuseumID(int id){
+        this.museumID = id;
     }
 }

@@ -17,10 +17,11 @@ public class Loan {
     @Column
     private LocalDate returned;
 
-    public Loan(Customer customer, LocalDate date, LocalDate returned) {
+    public Loan(Customer customer, LocalDate date, LocalDate returned, Game game) {
         this.customer = customer;
         this.date = date;
         this.returned = returned;
+        this.game = game;
     }
 
     public Game getGame() {

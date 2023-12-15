@@ -1,6 +1,5 @@
 package be.kuleuven.dbproject.repositories;
 
-import be.kuleuven.dbproject.domain.Customer;
 import be.kuleuven.dbproject.domain.Museum;
 
 import javax.persistence.EntityManager;
@@ -11,6 +10,19 @@ public class MuseumRepositoryJpaImpl {
 
     public MuseumRepositoryJpaImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
+
+    }
+
+    public String[] getAllMuseumAdresses() {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Museum.class);
+        var root = query.from(Museum.class); //blijkbaar selecteerd hij default de hele klasse
+        var list = entityManager.createQuery(query).getResultList();
+        String[] results = new String[list.size()];
+        for(int i = 0; i< list.size(); i++){
+            results[i] = list.get(i).getAddress();
+        }
+        return results;
     }
 
 
@@ -31,7 +43,7 @@ public class MuseumRepositoryJpaImpl {
         entityManager.getTransaction().commit();
     }
 
-    public List<Museum> getMuseumsByAddress(String address) {
+    public Museum getMuseumByAddress(String address) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Museum.class);
         var root = query.from(Museum.class);
@@ -39,6 +51,8 @@ public class MuseumRepositoryJpaImpl {
         // Assuming 'address' is a field in your Museum entity
         query.where(criteriaBuilder.equal(root.get("address"), address));
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getSingleResult();
     }
+
+
 }

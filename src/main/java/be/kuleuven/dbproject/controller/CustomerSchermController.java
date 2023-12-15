@@ -1,14 +1,13 @@
 package be.kuleuven.dbproject.controller;
 
-import be.kuleuven.dbproject.domain.Customer;
-import be.kuleuven.dbproject.domain.Donation;
-import be.kuleuven.dbproject.domain.Loan;
-import be.kuleuven.dbproject.domain.Purchase;
+import be.kuleuven.dbproject.domain.*;
 import be.kuleuven.dbproject.repositories.CustomerRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -70,10 +69,16 @@ public class CustomerSchermController implements Controller {
                 state = State.Customers;
                 showCustomers();
             }
+            else{
+                Node source = (Node) e.getSource();
+                Stage stage = (Stage) source.getScene().getWindow();
+                stage.close();
+            }
         });
 
         tblConfigs.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null && state == State.Customers) {
+                selectedCustomer = (Customer) tblConfigs.getSelectionModel().getSelectedItem();
                 btnShowLoans.setVisible(true);
                 btnShowDonations.setVisible(true);
                 btnShowPurchases.setVisible(true);
@@ -87,9 +92,7 @@ public class CustomerSchermController implements Controller {
 
 
     private void showPurchases() {
-        if(state == State.Customers){
-            selectedCustomer = (Customer) tblConfigs.getSelectionModel().getSelectedItem();
-        }
+
         if (selectedCustomer != null) {
             this.state = State.Purchases;
             btnShowPurchases.setVisible(false);
@@ -117,9 +120,7 @@ public class CustomerSchermController implements Controller {
     }
 
     private void showLoans() {
-        if(state == State.Customers){
-            selectedCustomer = (Customer) tblConfigs.getSelectionModel().getSelectedItem();
-        }
+
         if (selectedCustomer != null) {
             this.state = State.Loans;
             btnShowPurchases.setVisible(false);
@@ -146,9 +147,7 @@ public class CustomerSchermController implements Controller {
     }
 
     private void showDonations() {
-        if(state == State.Customers){
-            selectedCustomer = (Customer) tblConfigs.getSelectionModel().getSelectedItem();
-        }
+
         if (selectedCustomer != null) {
             this.state = State.Donations;
             btnShowPurchases.setVisible(false);
@@ -202,6 +201,11 @@ public class CustomerSchermController implements Controller {
             if(result.isPresent()){
                 if(result.get() == ButtonType.APPLY){
                     String[] s = controller.getInput();
+                    for(String string : s){
+                        if(string==""){
+                            throw new IOException();
+                        }
+                    }
                     switch(state){
                         case Customers:
                             Customer customer = new Customer(s[0],s[1],s[2]);
@@ -209,10 +213,10 @@ public class CustomerSchermController implements Controller {
                             showCustomers();
                             break;
                         case Loans:
-                            Loan loan = new Loan(selectedCustomer, LocalDate.now(),LocalDate.of(Integer.valueOf(s[1]),
-                                                                              Integer.valueOf(s[2]),
-                                                                              Integer.valueOf(s[3])));
-                            customerRepo.addLoan(loan);
+                            /*Loan loan = new Loan(selectedCustomer, LocalDate.now(),LocalDate.of(Integer.valueOf(s[1])
+                                                                              ,Integer.valueOf(s[2])
+                                                                              ,Integer.valueOf(s[3])));
+                            customerRepo.addLoan(loan);*/
                             showLoans();
                             break;
                         case Purchases:
@@ -225,7 +229,8 @@ public class CustomerSchermController implements Controller {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            showAlert();
+            add();
         }
     }
 
@@ -236,7 +241,7 @@ public class CustomerSchermController implements Controller {
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
             switch(state){
                 case Customers:
-                    controller = new addCustomDialogController(new String[]{"full name","adress","email"},
+                    controller = new addCustomDialogController(new String[]{"adress","email"},
                             new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
                     break;
                 case Loans:
@@ -259,12 +264,34 @@ public class CustomerSchermController implements Controller {
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL,ButtonType.APPLY);
             Optional<ButtonType> result = dialog.showAndWait();
             if(result.isPresent()){
-
+                if (result.get() == ButtonType.APPLY) {
+                    String[] s = controller.getInput();
+                    if (state == State.Customers){
+                        try{
+                            if(s[0] == ""){
+                                throw new NumberFormatException();
+                            }
+                            customerRepo.changeCustomerProperties(selectedCustomer,s[0],s[1]);
+                        } catch(NumberFormatException e) {
+                            showAlert();
+                            add();
+                        }
+                        showCustomers();
+                    }
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText("Please enter the right thing in all fields");
+        alert.showAndWait();
     }
 
 
@@ -283,7 +310,7 @@ public class CustomerSchermController implements Controller {
         emailColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getEmail()));
 
         tblConfigs.getColumns().addAll(customerIDColumn,fullNameColumn,addressColumn,emailColumn);
-        List<Customer> customers = customerRepo.getCustomers();
+        List<Customer> customers = customerRepo.getAllCustomers();
         tblConfigs.getItems().clear();
         for (Customer customer : customers) {
             tblConfigs.getItems().add(customer);

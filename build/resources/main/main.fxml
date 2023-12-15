@@ -4,21 +4,29 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="254.0" prefWidth="405.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="354.0" prefWidth="405.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Text layoutX="50.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Beheer Main" textAlignment="CENTER" wrappingWidth="312.03125">
          <font>
             <Font size="24.0" />
          </font>
       </Text>
-      <Button fx:id="btnBeheerScherm1" layoutX="111.0" layoutY="69.0" mnemonicParsing="false" text="Beheer Scherm 1" />
-      <Button fx:id="btnBeheerScherm2" layoutX="224.0" layoutY="68.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="151.0" text="Beheer Scherm 2" />
-      <Button fx:id="btnConfigAttaches" layoutX="206.0" layoutY="173.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="151.0" text="Beheer Config Attaches" />
-      <Label layoutX="138.0" layoutY="119.0" text="+ andere dingen?? " />
-      <Button fx:id="Customers" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" text="Customers" />
-      <Button fx:id="Donations" layoutX="14.0" layoutY="82.0" mnemonicParsing="false" text="Donations" />
-      <Button fx:id="Games" layoutX="14.0" layoutY="124.0" mnemonicParsing="false" text="Games" />
-      <Button fx:id="ShopItems" layoutX="14.0" layoutY="43.0" mnemonicParsing="false" text="ShopItems" />
-      <Button fx:id="Museums" layoutX="14.0" layoutY="160.0" mnemonicParsing="false" text="Museums" />
+      <VBox layoutX="50.0" layoutY="60.0" spacing="10">
+         <children>
+            <Button fx:id="Customers" prefHeight="35.0" prefWidth="294.0" text="Manage customers" />
+            <Button fx:id="Donations" prefHeight="35.0" prefWidth="300.0" text="Manage donations" />
+            <Button fx:id="Games" prefHeight="35.0" prefWidth="300.0" text="Manage games" />
+            <Button fx:id="ShopItems" prefHeight="35.0" prefWidth="300.0" text="Manage shopItems" />
+            <Button fx:id="Museums" prefHeight="35.0" prefWidth="300.0" text="Manage Museums" />
+
+            <Button fx:id="btnConfigAttaches" prefHeight="35.0" prefWidth="300.0" text="Beheer Config Attaches" />
+         </children>
+      </VBox>
+      <VBox layoutX="400.0" layoutY="60.0" spacing="10">
+         <children>
+            <Button fx:id="btnBeheerScherm1" prefHeight="35.0" prefWidth="200.0" text="Beheer Scherm 1" />
+            <Button fx:id="btnBeheerScherm2" prefHeight="35.0" prefWidth="200.0" text="Beheer Scherm 2" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

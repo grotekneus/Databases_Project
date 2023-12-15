@@ -16,7 +16,7 @@
                 <TableColumn prefWidth="75.0" text="C2" />
             </columns>
         </TableView>
-        <Text layoutX="16.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Beheer gegevens" wrappingWidth="567.21875">
+        <Text layoutX="16.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage customers" wrappingWidth="567.21875">
             <font>
                 <Font name="System Bold Italic" size="13.0" />
             </font>

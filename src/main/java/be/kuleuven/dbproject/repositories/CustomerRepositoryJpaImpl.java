@@ -13,7 +13,7 @@ public class CustomerRepositoryJpaImpl {
         this.entityManager = entityManager;
     }
 
-    public List<Customer> getCustomers(){
+    public List<Customer> getAllCustomers(){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Customer.class);
         var root = query.from(Customer.class); //blijkbaar selecteerd hij default de hele klasse
@@ -51,5 +51,13 @@ public class CustomerRepositoryJpaImpl {
     }
 
     public void addLoan(Loan loan) {
+    }
+
+    public void changeCustomerProperties(Customer selectedCustomer, String address, String email) {
+        entityManager.getTransaction().begin();
+        selectedCustomer.setAddress(address);
+        selectedCustomer.setEmail(email);
+        entityManager.merge(selectedCustomer);
+        entityManager.getTransaction().commit();
     }
 }

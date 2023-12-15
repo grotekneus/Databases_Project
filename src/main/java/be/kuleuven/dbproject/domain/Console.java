@@ -13,10 +13,6 @@ public class Console {
     private int consoleID;
     @Column
     private LocalDate year;
-    @PrePersist
-    private void prePersist() {
-        System.out.println("Bezig met het bezigen van het opslaan van student " + this);
-    }
 
     public Console(String name, LocalDate year) {
         this.name = name;

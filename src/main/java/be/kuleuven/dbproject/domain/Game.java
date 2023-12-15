@@ -31,6 +31,14 @@ public class Game {
         this.value = value;
     }
 
+    public Game(String name, Console console, Genre genre, int year, float value) {
+        this.name = name;
+        this.console = console;
+        this.genre = genre;
+        this.year = year;
+        this.value = value;
+    }
+
     public String getName() {
         return name;
     }
@@ -43,11 +51,11 @@ public class Game {
         return year;
     }
 
-    public Console getConsoleID() {
+    public Console getConsole() {
         return console;
     }
 
-    public Genre getGenreID() {
+    public Genre getGenre() {
         return genre;
     }
 

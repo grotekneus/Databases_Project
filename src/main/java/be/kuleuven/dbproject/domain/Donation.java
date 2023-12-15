@@ -21,13 +21,21 @@ public class Donation   {
     @Column
     private LocalDate date;
 
+
     @Column
     private float moneyDonated;
 
     public Donation(float moneyDonated, LocalDate date, int customerId) {
         this.moneyDonated = moneyDonated;
         this.date = date;
-        this.customerId=customerId;
+        this.customerId = customerId;
+    }
+
+    public Donation(float moneyDonated, LocalDate date,Customer customer) {
+        this.moneyDonated = moneyDonated;
+        this.date = date;
+        this.customer = customer;
+
     }
 
     public float getMoneyDonated() {
