@@ -101,7 +101,7 @@ public class DonationSchermController implements Controller {
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
             switch(state){
                 case Donations:
-                    controller = new addCustomDialogController(new String[]{"amount donated","date","customer ID"});
+                    controller = new addCustomDialogController(new String[]{"amount donated","customer ID"});
                     break;
                 /*case Loans:
                     controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"});
@@ -135,9 +135,9 @@ public class DonationSchermController implements Controller {
                     switch(state){
                         case Donations:
                             float money = Float.parseFloat(s[0]);
-                            LocalDate date = LocalDate.parse(s[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            LocalDate date = LocalDate.now();//LocalDate.parse(s[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                             //LocalDate date = LocalDate.parse(s[1]);
-                            int customerId= Integer.parseInt(s[2]);
+                            int customerId= Integer.parseInt(s[1]);
                             Donation donation = new Donation(money,date,customerId);
                             donationRepo.addDonation(donation);
                             showDonations();

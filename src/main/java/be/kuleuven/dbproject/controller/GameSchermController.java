@@ -136,8 +136,8 @@ public class GameSchermController implements Controller {
                             if(s[0] == ""){
                                 throw new NumberFormatException();
                             }
-                            GameInstance gInstance = new GameInstance(selectedGame.getGameID(),museumRepo.getMuseumByAddress(s[0]).getMuseumID());
-                            gameRepo.addGameInstance(gInstance);
+                            var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
+                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]).getMuseumID(),selectedGInstance);
                         } catch(NumberFormatException e) {
                             showAlert();
                             add();
@@ -191,8 +191,8 @@ public class GameSchermController implements Controller {
                             if(s[0] == ""){
                                 throw new NumberFormatException();
                             }
-                            var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
-                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]).getMuseumID(),selectedGInstance);
+                            GameInstance gInstance = new GameInstance(selectedGame.getGameID(),museumRepo.getMuseumByAddress(s[0]).getMuseumID());
+                            gameRepo.addGameInstance(gInstance);
                         } catch(NumberFormatException e) {
                             showAlert();
                             add();
