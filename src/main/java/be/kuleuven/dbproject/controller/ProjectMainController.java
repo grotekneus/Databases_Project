@@ -63,6 +63,15 @@ public class ProjectMainController {
             case "game":
                 controller = new GameSchermController();
                 break;
+            case "museum":
+                controller = new MuseumSchermController(entityManager);
+                break;
+            case "donation":
+                controller = new DonationSchermController(entityManager);
+                break;
+            case "shopitem":
+                controller = new ShopItemSchermController(entityManager);
+                break;
             default:
                 controller = new CustomerSchermController(entityManager);
                 break;

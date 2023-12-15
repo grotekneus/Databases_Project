@@ -15,7 +15,9 @@ public class GameInstance {
     @Column
     private int museumID;
 
-    public GameInstance() {
+    public GameInstance(int gameID, int museumID) {
+        this.gameID=gameID;
+        this.museumID=museumID;
     }
 
     public int getGameID() {
