@@ -11,40 +11,9 @@ public class GameRepositoryJpaImpl {
 
     public GameRepositoryJpaImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
-        Console c = new Console("PS3", LocalDate.now());
-        Genre g = new Genre("Fantasy");
-        entityManager.getTransaction().begin();
-        entityManager.persist(c);
-        entityManager.persist(g);
-        entityManager.getTransaction().commit();
     }
 
-    public String[] getAllConsoleNames(){
-        var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var query = criteriaBuilder.createQuery(Console.class);
-        var root = query.from(Console.class); //blijkbaar selecteerd hij default de hele klasse
-        var list = entityManager.createQuery(query).getResultList();
-        String[] results = new String[list.size()];
-        for(int i = 0; i< list.size(); i++){
-            results[i] = list.get(i).getName();
-        }
-        return results;
-    }
-    public Console getConsole(String s){
-        var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var query = criteriaBuilder.createQuery(Console.class);
-        var root = query.from(Console.class); //blijkbaar selecteerd hij default de hele klasse
-        query.where(criteriaBuilder.equal(root.get("name"),s));
-        return entityManager.createQuery(query).getSingleResult();
-    }
 
-    public Genre getGenre(String s){
-        var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var query = criteriaBuilder.createQuery(Genre.class);
-        var root = query.from(Genre.class); //blijkbaar selecteerd hij default de hele klasse
-        query.where(criteriaBuilder.equal(root.get("description"),s));
-        return entityManager.createQuery(query).getSingleResult();
-    }
 
     public List<Game> getAllGames() {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -68,17 +37,7 @@ public class GameRepositoryJpaImpl {
         entityManager.getTransaction().commit();
     }
 
-    public String[] getAllGenreNames() {
-        var criteriaBuilder = entityManager.getCriteriaBuilder();
-        var query = criteriaBuilder.createQuery(Genre.class);
-        var root = query.from(Genre.class); //blijkbaar selecteerd hij default de hele klasse
-        var list = entityManager.createQuery(query).getResultList();
-        String[] results = new String[list.size()];
-        for(int i = 0; i< list.size(); i++){
-            results[i] = list.get(i).getDescription();
-        }
-        return results;
-    }
+
 
     public void addGameInstance(GameInstance gInstance) {
         entityManager.getTransaction().begin();
@@ -93,7 +52,7 @@ public class GameRepositoryJpaImpl {
         entityManager.getTransaction().commit();
     }
 
-    public void changeGameInstanceMuseum(int museumID, GameInstance selectedGInstance) {
+        public void changeGameInstanceMuseum(int museumID, GameInstance selectedGInstance) {
         entityManager.getTransaction().begin();
         selectedGInstance.setMuseumID(museumID);
         entityManager.merge(selectedGInstance);

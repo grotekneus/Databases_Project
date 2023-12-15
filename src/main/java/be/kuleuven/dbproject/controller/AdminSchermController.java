@@ -1,13 +1,26 @@
 package be.kuleuven.dbproject.controller;
 
+import be.kuleuven.dbproject.domain.Console;
+import be.kuleuven.dbproject.domain.Game;
+import be.kuleuven.dbproject.repositories.ConsoleGenreRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-public class BeheerScherm2Controller {
+import javax.persistence.EntityManager;
+import java.util.List;
+
+public class AdminSchermController implements Controller {
+    private EntityManager entityManager;
+    private ConsoleGenreRepositoryJpaImpl cgRepo;
+
+    public AdminSchermController(EntityManager entityManager) {
+        this.entityManager = entityManager;
+        this.cgRepo = new ConsoleGenreRepositoryJpaImpl(entityManager);
+    }
+
     public enum Tables {
         Console,
         Customer,
@@ -26,7 +39,7 @@ public class BeheerScherm2Controller {
     @FXML
     private Button btnAdd;
     @FXML
-    private Button btnModify;
+    private Button btnEdit;
     @FXML
     private Button btnClose;
     @FXML
@@ -38,7 +51,7 @@ public class BeheerScherm2Controller {
     public void initialize() {
         initTable(Tables.Console);
         btnAdd.setOnAction(e -> addNewRow());
-        btnModify.setOnAction(e -> {
+        btnEdit.setOnAction(e -> {
             verifyOneRowSelected();
             modifyCurrentRow();
         });
@@ -57,7 +70,7 @@ public class BeheerScherm2Controller {
         choiceBox.setOnAction(e -> {
             initTable(choiceBox.getSelectionModel().getSelectedItem());
         });
-        choiceBox.setValue(Tables.Console);
+        //choiceBox.setValue(Tables.Console);
     }
 
     private void initTable(Tables type) {
@@ -68,56 +81,42 @@ public class BeheerScherm2Controller {
         String[] colNames;
         switch(type){
             case Console:
-                colNames= new String[]{"Name","consoleID","year","value","museumid"};
-                break;
-            case Customer:
-                colNames= new String[]{"customerID","full name","adress","email"};
-                break;
-            case Donation:
-                colNames= new String[]{"Name","consoleID","year","value","museumid"};
-                break;
-            case Game:
-                colNames= new String[]{"Name","consoleID","year","value","museumid"};
-                break;
-            case GameInstance:
-                colNames= new String[]{"Name","consoleID","year","value","museumid"};
+                showConsoles();
+                colNames= new String[]{"Name","consoleID","year"};
                 break;
             case Genre:
-                colNames= new String[]{"Name","consoleID","year","value","museumid"};
-                break;
-            case Loan:
-                colNames= new String[]{"Name","consoleID","year","value","museumid"};
-                break;
-            case Museum:
-                colNames= new String[]{"Name","consoleID","year","value","museumid"};
-                break;
-            case Purchase:
-                colNames= new String[]{"Name","consoleID","year","value","museumid"};
-                break;
-            case ShopItem:
                 colNames= new String[]{"Name","consoleID","year","value","museumid"};
                 break;
             default:
                 colNames= new String[]{"Name","consoleID","year","value","museumid"};
                 break;
-
         }
-
-        // TODO verwijderen en "echte data" toevoegen!
-        int colIndex = 0;
-        for(var colName : colNames) {
-            TableColumn<ObservableList<String>, String> col = new TableColumn<>(colName);
-            final int finalColIndex = colIndex;
-            col.setCellValueFactory(f -> new ReadOnlyObjectWrapper<>(f.getValue().get(finalColIndex)));
-            tblConfigs.getColumns().add(col);
-            colIndex++;
-        }
-
-
-        /*for(int i = 0; i < 10; i++) {
-            tblConfigs.getItems().add(FXCollections.observableArrayList("ding " + i, "categorie 1", i*10 + "", i * 33 + "", ));
-        }*/
     }
+
+    private void showConsoles() {
+        tblConfigs.getColumns().clear();
+        tblConfigs.getItems().clear();
+
+        TableColumn<Console, String> nameColumn = new TableColumn<>("Name");
+        TableColumn<Console, String> consoleIDColumn = new TableColumn<>("consoleID");
+        TableColumn<Console, String> yearColumn = new TableColumn<>("year");
+
+
+
+        nameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getName())));
+        consoleIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getConsoleID())));
+        yearColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getYear())));
+
+
+
+        tblConfigs.getColumns().addAll(nameColumn,consoleIDColumn,yearColumn);
+        List<Console> consoles = cgRepo.getAllConsoles();
+        tblConfigs.getItems().clear();
+        for (Console c : consoles) {
+            tblConfigs.getItems().add(c);
+        }
+    }
+
     private void fillTable(){
 
     }

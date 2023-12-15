@@ -2,6 +2,7 @@ package be.kuleuven.dbproject.controller;
 
 import be.kuleuven.dbproject.ProjectMain;
 import be.kuleuven.dbproject.domain.*;
+import be.kuleuven.dbproject.repositories.ConsoleGenreRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.MuseumRepositoryJpaImpl;
 import javafx.application.Platform;
@@ -101,6 +102,7 @@ public class GameSchermController implements Controller {
 
     private void edit() {
         try {
+
             FXMLLoader fxmlLoader = new FXMLLoader();
             addCustomDialogController controller = null;
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
@@ -153,6 +155,7 @@ public class GameSchermController implements Controller {
 
     private void add() {
         try {
+            ConsoleGenreRepositoryJpaImpl cgRepo = new ConsoleGenreRepositoryJpaImpl(entityManager);
             FXMLLoader fxmlLoader = new FXMLLoader();
             addCustomDialogController controller = null;
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
@@ -161,7 +164,7 @@ public class GameSchermController implements Controller {
                 controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumNames()});
             } else {
                 controller = new addCustomDialogController(true, new String[]{"console","genre","name", "year", "value"}
-                                                            ,new String[][]{gameRepo.getAllConsoleNames(),gameRepo.getAllGenreNames()});
+                                                            ,new String[][]{cgRepo.getAllConsoleNames(),cgRepo.getAllGenreNames()});
             }
             fxmlLoader.setController(controller);
             DialogPane pane = fxmlLoader.load();
@@ -178,7 +181,7 @@ public class GameSchermController implements Controller {
                             if(s[0] == ""){
                                 throw new NumberFormatException();
                             }
-                            Game game = new Game(s[2],gameRepo.getConsole(s[0]),gameRepo.getGenre(s[1]),Integer.parseInt(s[3]),Float.parseFloat(s[3]));
+                            Game game = new Game(s[2],cgRepo.getConsole(s[0]),cgRepo.getGenre(s[1]),Integer.parseInt(s[3]),Float.parseFloat(s[3]));
                             gameRepo.addGame(game);
                         } catch(NumberFormatException e) {
                             showAlert();

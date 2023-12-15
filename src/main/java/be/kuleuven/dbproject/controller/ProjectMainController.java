@@ -15,12 +15,11 @@ import javax.persistence.EntityManager;
 
 public class ProjectMainController {
 
-    @FXML
-    private Button btnBeheerScherm1;
-    @FXML
-    private Button btnBeheerScherm2;
+
     @FXML
     private Button btnConfigAttaches;
+    @FXML
+    private Button btnAdmin;
     @FXML
     private Button Museums;
     @FXML
@@ -38,8 +37,7 @@ public class ProjectMainController {
     }
 
     public void initialize() {
-        btnBeheerScherm1.setOnAction(e -> showBeheerScherm("scherm1"));
-        btnBeheerScherm2.setOnAction(e -> showBeheerScherm("scherm2"));
+        btnAdmin.setOnAction(e -> showBeheerScherm("admin"));
         btnConfigAttaches.setOnAction(e -> showBeheerScherm("attaches"));
         Customers.setOnAction(e -> showBeheerScherm("customer"));
         ShopItems.setOnAction(e -> showBeheerScherm("shopitem"));
@@ -58,6 +56,9 @@ public class ProjectMainController {
                 break;
             case "game":
                 controller = new GameSchermController(entityManager);
+                break;
+            case "admin":
+                controller = new AdminSchermController(entityManager);
                 break;
             default:
                 controller = new CustomerSchermController(entityManager);

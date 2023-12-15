@@ -25,11 +25,11 @@ public class MuseumRepositoryJpaImpl {
         return results;
     }
 
-    public Museum getMuseum(String s) {
+    public Museum getMuseum(String address) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Museum.class);
         var root = query.from(Museum.class); //blijkbaar selecteerd hij default de hele klasse
-        query.where(criteriaBuilder.equal(root.get("address"),s));
+        query.where(criteriaBuilder.equal(root.get("address"),address));
         return entityManager.createQuery(query).getSingleResult();
     }
 }
