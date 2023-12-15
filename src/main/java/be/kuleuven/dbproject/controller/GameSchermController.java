@@ -58,8 +58,7 @@ public class GameSchermController implements Controller {
                 state = State.GAMES;
             }
             else{
-                Node source = (Node) e.getSource();
-                Stage stage = (Stage) source.getScene().getWindow();
+                var stage = (Stage) btnClose.getScene().getWindow();
                 stage.close();
             }
         });

@@ -62,4 +62,44 @@ public class ConsoleGenreRepositoryJpaImpl {
         var root = query.from(Console.class); //blijkbaar selecteerd hij default de hele klasse
         return entityManager.createQuery(query).getResultList();
     }
+
+    public void addConsole(Console c) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(c);
+        entityManager.getTransaction().commit();
+    }
+
+    public void addGenre(Genre g) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(g);
+        entityManager.getTransaction().commit();
+    }
+
+    public void changeConsole(String name,int year,Console c) {
+        entityManager.getTransaction().begin();
+        c.setName(name);
+        c.setYear(year);
+        entityManager.merge(c);
+        entityManager.getTransaction().commit();
+    }
+
+    public void changeGenre(String description, Genre g) {
+        entityManager.getTransaction().begin();
+        g.setDescription(description);
+        entityManager.merge(g);
+        entityManager.getTransaction().commit();
+    }
+
+    public void deleteConsole(Console console) {
+        entityManager.getTransaction().begin();
+        entityManager.remove(console);
+        entityManager.getTransaction().commit();
+    }
+
+    public void deleteGenre(Genre genre){
+        entityManager.getTransaction().begin();
+        entityManager.remove(genre);
+        entityManager.getTransaction().commit();
+
+    }
 }

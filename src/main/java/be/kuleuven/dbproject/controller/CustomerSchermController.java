@@ -69,8 +69,7 @@ public class CustomerSchermController implements Controller {
                 showCustomers();
             }
             else{
-                Node source = (Node) e.getSource();
-                Stage stage = (Stage) source.getScene().getWindow();
+                var stage = (Stage) btnClose.getScene().getWindow();
                 stage.close();
             }
         });
