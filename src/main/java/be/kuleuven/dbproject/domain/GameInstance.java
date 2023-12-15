@@ -20,9 +20,6 @@ public class GameInstance {
         this.museumID = museumID;
     }
 
-    public GameInstance() {
-    }
-
     public int getGameID() {
         return gameID;
     }

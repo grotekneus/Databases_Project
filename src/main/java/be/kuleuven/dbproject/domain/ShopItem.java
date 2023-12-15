@@ -19,9 +19,11 @@ public class ShopItem {
 
     private Museum museum;
 
-    public ShopItem(String name, float price) {
+    public ShopItem(String name, float price, Museum museum, ItemType itemType) {
         this.name = name;
         this.price = price;
+        this.museum=museum;
+        this.itemType=itemType;
     }
 
     public void setName(String name) {

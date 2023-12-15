@@ -107,7 +107,7 @@ public class GameSchermController implements Controller {
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
             var museumRepo = new MuseumRepositoryJpaImpl(entityManager);
             if (state == State.GAMEINSTANCES) {
-                controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumNames()});
+                controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumAdresses()});
             } else {
                 controller = new addCustomDialogController(new String[]{"value"},new String[]{String.valueOf(selectedGame.getValue())});
             }
@@ -137,8 +137,8 @@ public class GameSchermController implements Controller {
                             if(s[0] == ""){
                                 throw new NumberFormatException();
                             }
-                            GameInstance gInstance = new GameInstance(selectedGame.getGameID(),museumRepo.getMuseum(s[0]).getMuseumID());
-                            gameRepo.addGameInstance(gInstance);
+                            var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
+                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]).getMuseumID(),selectedGInstance);
                         } catch(NumberFormatException e) {
                             showAlert();
                             add();
@@ -160,7 +160,7 @@ public class GameSchermController implements Controller {
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
             var museumRepo = new MuseumRepositoryJpaImpl(entityManager);
             if (state == State.GAMEINSTANCES) {
-                controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumNames()});
+                controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumAdresses()});
             } else {
                 controller = new addCustomDialogController(true, new String[]{"console","genre","name", "year", "value"}
                                                             ,new String[][]{cgRepo.getAllConsoleNames(),cgRepo.getAllGenreNames()});
@@ -193,8 +193,8 @@ public class GameSchermController implements Controller {
                             if(s[0] == ""){
                                 throw new NumberFormatException();
                             }
-                            var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
-                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseum(s[0]).getMuseumID(),selectedGInstance);
+                            GameInstance gInstance = new GameInstance(selectedGame.getGameID(),museumRepo.getMuseumByAddress(s[0]).getMuseumID());
+                            gameRepo.addGameInstance(gInstance);
                         } catch(NumberFormatException e) {
                             showAlert();
                             add();

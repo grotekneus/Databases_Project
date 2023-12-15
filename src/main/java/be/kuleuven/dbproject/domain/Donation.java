@@ -6,25 +6,43 @@ import java.time.LocalDate;
 @Entity
 public class Donation   {
 
-
-    @ManyToOne
+    @ManyToOne//???????????????
     @JoinColumn
     private Customer customer;
+    @Column
+    private int customerId;
+
     @Id
     @Column
-    private float moneyDonated;
+    @GeneratedValue
+    private int donationID;
+
+
     @Column
     private LocalDate date;
+
+
+    @Column
+    private float moneyDonated;
+
+    public Donation(float moneyDonated, LocalDate date, int customerId) {
+        this.moneyDonated = moneyDonated;
+        this.date = date;
+        this.customerId = customerId;
+    }
 
     public Donation(float moneyDonated, LocalDate date,Customer customer) {
         this.moneyDonated = moneyDonated;
         this.date = date;
         this.customer = customer;
+
     }
 
     public float getMoneyDonated() {
         return moneyDonated;
     }
+
+    public int getCustomerId(){return customerId;}
 
     public void setMoneyDonated(float moneyDonated) {
         this.moneyDonated = moneyDonated;

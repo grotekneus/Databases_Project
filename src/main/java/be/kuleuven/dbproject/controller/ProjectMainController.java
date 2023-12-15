@@ -59,6 +59,15 @@ public class ProjectMainController {
                 break;
             case "admin":
                 controller = new AdminSchermController(entityManager);
+
+            case "museum":
+                controller = new MuseumSchermController(entityManager);
+                break;
+            case "donation":
+                controller = new DonationSchermController(entityManager);
+                break;
+            case "shopitem":
+                controller = new ShopItemSchermController(entityManager);
                 break;
             default:
                 controller = new CustomerSchermController(entityManager);
