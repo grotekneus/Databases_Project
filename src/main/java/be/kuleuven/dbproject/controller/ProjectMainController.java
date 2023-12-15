@@ -1,10 +1,7 @@
 package be.kuleuven.dbproject.controller;
 
-import be.kuleuven.dbproject.EntityManagerClass;
 import be.kuleuven.dbproject.ProjectMain;
 import be.kuleuven.dbproject.domain.Loan;
-import be.kuleuven.dbproject.repositories.CustomerRepositoryJpaImpl;
-import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,7 +12,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
-import javax.swing.text.html.parser.Entity;
 
 public class ProjectMainController {
 
@@ -61,7 +57,7 @@ public class ProjectMainController {
                 controller = new CustomerSchermController(entityManager);
                 break;
             case "game":
-                controller = new GameSchermController();
+                controller = new GameSchermController(entityManager);
                 break;
             default:
                 controller = new CustomerSchermController(entityManager);

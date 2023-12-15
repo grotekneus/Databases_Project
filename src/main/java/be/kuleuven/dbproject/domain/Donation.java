@@ -16,9 +16,10 @@ public class Donation   {
     @Column
     private LocalDate date;
 
-    public Donation(float moneyDonated, LocalDate date) {
+    public Donation(float moneyDonated, LocalDate date,Customer customer) {
         this.moneyDonated = moneyDonated;
         this.date = date;
+        this.customer = customer;
     }
 
     public float getMoneyDonated() {
