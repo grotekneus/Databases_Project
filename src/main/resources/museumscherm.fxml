@@ -26,7 +26,6 @@
             </Text>
             <Button fx:id="btnAdd" layoutX="16.0" layoutY="304.0" mnemonicParsing="false" text="Add" />
             <Button fx:id="btnEdit" layoutX="60.0" layoutY="304.0" mnemonicParsing="false" text="Edit" />
-            <Button fx:id="btnRevenue" layoutX="300.0" layoutY="304.0" mnemonicParsing="false" text="Eddit revenue" />
             <Button fx:id="btnSearchGame" layoutX="200.0" layoutY="304.0" mnemonicParsing="false" text="Search game" />
             <Button fx:id="btnSearchMuseum" layoutX="100.0" layoutY="304.0" mnemonicParsing="false" text="Search Museum" />
             <Button fx:id="btnClose" layoutX="520.0" layoutY="304.0" mnemonicParsing="false" text="Close" />

@@ -1,14 +1,19 @@
 package be.kuleuven.dbproject.controller;
 
+import be.kuleuven.dbproject.domain.Customer;
 import be.kuleuven.dbproject.domain.Donation;
 import be.kuleuven.dbproject.domain.Museum;
+import be.kuleuven.dbproject.repositories.CustomerRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.DonationRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -26,7 +31,7 @@ public class DonationSchermController implements Controller {
     @FXML
     private Button btnFilterByPrice;
     @FXML
-    private Button btnFilterByName;
+    private Button btnFilterID;
     @FXML
     private Button btnClose;
     @FXML
@@ -37,22 +42,32 @@ public class DonationSchermController implements Controller {
     private Donation selectedDonation;
     private State state = State.Donations;
     private DonationRepositoryJpaImpl donationRepo;
+    private CustomerRepositoryJpaImpl customerRepo;
+
     public DonationSchermController(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.donationRepo = new DonationRepositoryJpaImpl(entityManager);
+        this.customerRepo = new CustomerRepositoryJpaImpl(entityManager);
     }
 
     public void initialize() {
         this.state = State.Donations;
         btnAdd.setOnAction(e->{add();});
         btnEdit.setOnAction(e->{edit();});
-        btnFilterByName.setOnAction(e -> filterByName());
+        btnEdit.setVisible(false);
+
+        btnFilterID.setOnAction(e -> filterByID());
         btnFilterByPrice.setOnAction(e -> filterByPrice());
 
         btnClose.setOnAction(e ->{
             if(state != State.Donations){
-                state = State.Donations;
+                state = state.Donations;
                 showDonations();
+            }
+            else{
+                Node source = (Node) e.getSource();
+                Stage stage = (Stage) source.getScene().getWindow();
+                stage.close();
             }
         });
         /*
@@ -72,15 +87,11 @@ public class DonationSchermController implements Controller {
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
 
-        TableColumn<Donation, Integer > customurColumn = new TableColumn<>("Costumer");
+        TableColumn<Donation, String > customurColumn = new TableColumn<>("Costumer");
         TableColumn<Donation, LocalDate> dateColumn = new TableColumn<>("Date");
         TableColumn<Donation, Float> MoneyDonatedColumn = new TableColumn<>("Money Donated");
-        //TableColumn<Museum, Float> revenueColumn = new TableColumn<>("revenue");
-        //TableColumn<Museum, Integer> visitorsColumn = new TableColumn<>("visitors");
+        customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getCustomer().getCustomerID())));
 
-
-        //customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getCustomer().getCustomerID())));
-        customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getCustomerId()));
         dateColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDate()));
         MoneyDonatedColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getMoneyDonated()));
 
@@ -122,39 +133,39 @@ public class DonationSchermController implements Controller {
             if(result.isPresent()){
                 if(result.get() == ButtonType.APPLY){
                     String[] s = controller.getInput();
-                    //int visitors = Integer.parseInt(s[1]);
-                    //System.out.println("Converted to int: " + visitors);
-
-
-                    //float revenue = Float.parseFloat(s[2]);
-                    //System.out.println("Converted to float: " + revenue);
-
-
                     switch(state){
                         case Donations:
-                            float money = Float.parseFloat(s[0]);
-                            LocalDate date = LocalDate.now();//LocalDate.parse(s[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                            //LocalDate date = LocalDate.parse(s[1]);
-                            int customerId= Integer.parseInt(s[1]);
-                            Donation donation = new Donation(money,date,customerId);
-                            donationRepo.addDonation(donation);
-                            showDonations();
-                            break;
-                        /*case Loans:
-                            Loan loan = new Loan(selectedCustomer, LocalDate.now(),LocalDate.of(Integer.valueOf(s[1]),
-                                    Integer.valueOf(s[2]),
-                                    Integer.valueOf(s[3])));
-                            customerRepo.addLoan(loan);
-                            showLoans();
-                            break;
-                        case Purchases:
+                            float money;
+                            try {
+                                money = Float.parseFloat(s[0]);
+                            } catch (NumberFormatException e) {
+                                throwError("Please enter a number in money");
+                                return;
+                            }
+                            LocalDate date = LocalDate.now();  // or parse the date if needed
 
-                            break;
-                        case Donations:
+                            int customerId;
+                            try {
+                                customerId = Integer.parseInt(s[1]);
+                            } catch (NumberFormatException e) {
+                                throwError("Please enter a number in customerID");
+                                return;
+                            }
 
-                            break;
+                            try {
+                                Customer customer = customerRepo.getCustomerById(customerId);
+                                if (customer == null) {
+                                   throwError("Please enter existing customerID");
+                                    return;
+                                }
 
-                         */
+                                Donation donation = new Donation(money, date, customer);
+                                donationRepo.addDonation(donation);
+                                showDonations();
+                            } catch (NoResultException e) {
+                                throwError("Please enter existing customerID");
+                            }
+                            break;
                     }
                 }
             }
@@ -167,12 +178,93 @@ public class DonationSchermController implements Controller {
 
     }
 
-    private void filterByName(){
+    private void filterByID() {
+        try {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Filter Donations by Customer ID");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Enter Customer ID:");
 
+            Optional<String> result = dialog.showAndWait();
+
+            result.ifPresent(customerIdString -> {
+                try {
+                    int customerId;
+                    try {
+                        customerId = Integer.parseInt(customerIdString);
+                    } catch (NumberFormatException e) {
+                        throwError("Please enter a number in customerID");
+                        return;
+                    }
+
+                    try {
+                        Customer customer = customerRepo.getCustomerById(customerId);
+                        if (customer == null) {
+                            throwError("Please enter an existing customerID");
+                            return;
+                        }
+
+                        List<Donation> customerDonations = donationRepo.getDonationsByCustomer(customer);
+
+                        // Display the filtered donations in the table
+                        tblConfigs.getItems().clear();
+                        tblConfigs.getItems().addAll(customerDonations);
+                    } catch (NoResultException e) {
+                        throwError("Please enter an existing customerID");
+                    }
+                } catch (Exception e) {
+                    // Handle exceptions as needed
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            // Handle exceptions as needed
+            e.printStackTrace();
+        }
     }
 
-    private void filterByPrice(){
 
+    private void filterByPrice(){
+        try {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Filter Donations by Price");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Enter Price:");
+
+            Optional<String> result = dialog.showAndWait();
+
+            result.ifPresent(priceString -> {
+                try {
+                    float price;
+                    try {
+                        price = Float.parseFloat(priceString);
+                    } catch (NumberFormatException e) {
+                        throwError("Please enter a valid number for the price");
+                        return;
+                    }
+
+                    List<Donation> donationsAbovePrice = donationRepo.getDonationsAbovePrice(price);
+                    if (donationsAbovePrice.isEmpty()) {
+                        throwError("No donations found above the entered price");
+                    } else {
+                        tblConfigs.getItems().clear();
+                        tblConfigs.getItems().addAll(donationsAbovePrice);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void throwError(String error){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(error);
+        alert.showAndWait();
     }
 
 

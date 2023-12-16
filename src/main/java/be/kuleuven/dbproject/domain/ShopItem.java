@@ -38,6 +38,8 @@ public class ShopItem {
         this.price = price;
     }
 
+    public void setMuseum(Museum museum){this.museum=museum;}
+
     public String getName() {
         return name;
     }
@@ -54,7 +56,7 @@ public class ShopItem {
         return itemID;
     }
 
-    public Museum getMuseumID() {
+    public Museum getMuseum() {
         return museum;
     }
 }
