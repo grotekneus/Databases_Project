@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +38,7 @@ public class CustomerSchermController implements Controller {
     @FXML
     private TableView tblConfigs;
     @FXML
-    private ChoiceBox<BeheerScherm2Controller.Tables> choiceBox;
+    private ChoiceBox<AdminSchermController.Tables> choiceBox;
 
     private EntityManager entityManager;
     private Customer selectedCustomer;
@@ -70,10 +69,10 @@ public class CustomerSchermController implements Controller {
                 showCustomers();
             }
             else{
-                Node source = (Node) e.getSource();
-                Stage stage = (Stage) source.getScene().getWindow();
+                var stage = (Stage) btnClose.getScene().getWindow();
                 stage.close();
             }
+            selectedCustomer = null;
         });
 
         tblConfigs.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {

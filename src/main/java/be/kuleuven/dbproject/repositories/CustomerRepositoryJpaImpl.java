@@ -68,4 +68,12 @@ public class CustomerRepositoryJpaImpl {
         entityManager.merge(selectedCustomer);
         entityManager.getTransaction().commit();
     }
+
+    public Customer getCustomer(String name){
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Customer.class);
+        var root = query.from(Customer.class); //blijkbaar selecteerd hij default de hele klasse
+        query.where(criteriaBuilder.equal(root.get("name"), name));
+        return entityManager.createQuery(query).getSingleResult();
+    }
 }

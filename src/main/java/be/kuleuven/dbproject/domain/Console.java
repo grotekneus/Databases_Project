@@ -12,9 +12,9 @@ public class Console {
     @GeneratedValue
     private int consoleID;
     @Column
-    private LocalDate year;
+    private int year;
 
-    public Console(String name, LocalDate year) {
+    public Console(String name, int year) {
         this.name = name;
         this.year = year;
     }
@@ -31,11 +31,11 @@ public class Console {
         return consoleID;
     }
 
-    public LocalDate getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(LocalDate year) {
+    public void setYear(int year) {
         this.year = year;
     }
 

@@ -37,8 +37,6 @@ public class DonationSchermController implements Controller {
     private Button btnAdd;
     @FXML
     private TableView tblConfigs;
-    @FXML
-    private ChoiceBox<BeheerScherm2Controller.Tables> choiceBox;
     private EntityManager entityManager;
     private Donation selectedDonation;
     private State state = State.Donations;

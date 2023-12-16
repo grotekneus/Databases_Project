@@ -26,6 +26,7 @@ public class MuseumRepositoryJpaImpl {
     }
 
 
+
     public List<Museum> getMuseums(){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Museum.class);

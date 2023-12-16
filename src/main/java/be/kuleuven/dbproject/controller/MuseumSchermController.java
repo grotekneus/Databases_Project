@@ -46,8 +46,7 @@ public class MuseumSchermController implements Controller {
     private Button btnAdd;
     @FXML
     private TableView tblConfigs;
-    @FXML
-    private ChoiceBox<BeheerScherm2Controller.Tables> choiceBox;
+
 
     private EntityManager entityManager;
 
