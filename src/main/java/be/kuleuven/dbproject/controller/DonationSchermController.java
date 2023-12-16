@@ -165,10 +165,7 @@ public class DonationSchermController implements Controller {
                             } catch (NoResultException e) {
                                 throwError("Please enter existing customerID");
                             }
-
-
                             break;
-
                     }
                 }
             }
@@ -228,7 +225,38 @@ public class DonationSchermController implements Controller {
 
 
     private void filterByPrice(){
+        try {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Filter Donations by Price");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Enter Price:");
 
+            Optional<String> result = dialog.showAndWait();
+
+            result.ifPresent(priceString -> {
+                try {
+                    float price;
+                    try {
+                        price = Float.parseFloat(priceString);
+                    } catch (NumberFormatException e) {
+                        throwError("Please enter a valid number for the price");
+                        return;
+                    }
+
+                    List<Donation> donationsAbovePrice = donationRepo.getDonationsAbovePrice(price);
+                    if (donationsAbovePrice.isEmpty()) {
+                        throwError("No donations found above the entered price");
+                    } else {
+                        tblConfigs.getItems().clear();
+                        tblConfigs.getItems().addAll(donationsAbovePrice);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void throwError(String error){

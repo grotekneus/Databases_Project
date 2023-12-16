@@ -35,6 +35,16 @@ public class DonationRepositoryJpaImpl {
 
         return entityManager.createQuery(query).getResultList();
     }
+
+    public List<Donation> getDonationsAbovePrice(float price) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Donation.class);
+        var root = query.from(Donation.class); //blijkbaar selecteerd hij default de hele klasse
+
+        query.select(root).where(criteriaBuilder.greaterThanOrEqualTo(root.get("moneyDonated"), price));
+
+        return entityManager.createQuery(query).getResultList();
+    }
 }
 
 
