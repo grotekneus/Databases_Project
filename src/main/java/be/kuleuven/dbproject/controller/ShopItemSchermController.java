@@ -308,39 +308,7 @@ public class ShopItemSchermController implements Controller {
             e.printStackTrace();
         }
     }
-        /*
-        try {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Search shop item by item ID");
-            dialog.setHeaderText(null);
-            dialog.setContentText("Enter item ID:");
 
-            Optional<String> result = dialog.showAndWait();
-            int id = Integer.parseInt(result);
-
-            result.ifPresent(itemID -> {
-                // Perform the search based on the entered address
-                ShopItem matchingShopItem = shopItemRepo.getShopItemById();
-
-                if (matchingMuseum==null) {
-                    // No matching museums found, display a message or handle this case
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Search Result");
-                    alert.setHeaderText(null);
-                    alert.setContentText("No museums found with the specified address.");
-                    alert.showAndWait();
-                } else {
-                    // Select the matching museum in the table
-                    tblConfigs.getSelectionModel().clearSelection();
-                    tblConfigs.getSelectionModel().select(matchingMuseum);
-                }
-            });
-        } catch (Exception e) {
-            // Handle exceptions as needed
-            e.printStackTrace();
-        }
-
-         */
 
 
 

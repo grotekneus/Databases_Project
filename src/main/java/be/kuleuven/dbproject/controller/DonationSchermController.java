@@ -31,7 +31,7 @@ public class DonationSchermController implements Controller {
     @FXML
     private Button btnFilterByPrice;
     @FXML
-    private Button btnFilterByName;
+    private Button btnFilterID;
     @FXML
     private Button btnClose;
     @FXML
@@ -56,7 +56,7 @@ public class DonationSchermController implements Controller {
         btnEdit.setOnAction(e->{edit();});
         btnEdit.setVisible(false);
 
-        btnFilterByName.setOnAction(e -> filterByName());
+        btnFilterID.setOnAction(e -> filterByID());
         btnFilterByPrice.setOnAction(e -> filterByPrice());
 
         btnClose.setOnAction(e ->{
@@ -133,25 +133,13 @@ public class DonationSchermController implements Controller {
             if(result.isPresent()){
                 if(result.get() == ButtonType.APPLY){
                     String[] s = controller.getInput();
-                    //int visitors = Integer.parseInt(s[1]);
-                    //System.out.println("Converted to int: " + visitors);
-
-
-                    //float revenue = Float.parseFloat(s[2]);
-                    //System.out.println("Converted to float: " + revenue);
-
-
                     switch(state){
                         case Donations:
                             float money;
                             try {
                                 money = Float.parseFloat(s[0]);
                             } catch (NumberFormatException e) {
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Error");
-                                alert.setHeaderText(null);
-                                alert.setContentText("Please enter a number in money");
-                                alert.showAndWait();
+                                throwError("Please enter a number in money");
                                 return;
                             }
                             LocalDate date = LocalDate.now();  // or parse the date if needed
@@ -160,23 +148,14 @@ public class DonationSchermController implements Controller {
                             try {
                                 customerId = Integer.parseInt(s[1]);
                             } catch (NumberFormatException e) {
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Error");
-                                alert.setHeaderText(null);
-                                alert.setContentText("Please enter a number in customerID");
-                                alert.showAndWait();
+                                throwError("Please enter a number in customerID");
                                 return;
                             }
 
                             try {
                                 Customer customer = customerRepo.getCustomerById(customerId);
                                 if (customer == null) {
-                                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                                    alert.setTitle("Error");
-                                    alert.setHeaderText(null);
-                                    alert.setContentText("Please enter existing customerID");
-                                    alert.showAndWait();
-                                    //showAlert("Customer with ID " + customerId + " does not exist.");
+                                   throwError("Please enter existing customerID");
                                     return;
                                 }
 
@@ -184,17 +163,12 @@ public class DonationSchermController implements Controller {
                                 donationRepo.addDonation(donation);
                                 showDonations();
                             } catch (NoResultException e) {
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Error");
-                                alert.setHeaderText(null);
-                                alert.setContentText("Please enter existing customerID");
-                                alert.showAndWait();
-                                //showAlert("Customer with ID " + customerId + " does not exist.");
+                                throwError("Please enter existing customerID");
                             }
 
 
                             break;
-                        
+
                     }
                 }
             }
@@ -207,12 +181,62 @@ public class DonationSchermController implements Controller {
 
     }
 
-    private void filterByName(){
+    private void filterByID() {
+        try {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Filter Donations by Customer ID");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Enter Customer ID:");
 
+            Optional<String> result = dialog.showAndWait();
+
+            result.ifPresent(customerIdString -> {
+                try {
+                    int customerId;
+                    try {
+                        customerId = Integer.parseInt(customerIdString);
+                    } catch (NumberFormatException e) {
+                        throwError("Please enter a number in customerID");
+                        return;
+                    }
+
+                    try {
+                        Customer customer = customerRepo.getCustomerById(customerId);
+                        if (customer == null) {
+                            throwError("Please enter an existing customerID");
+                            return;
+                        }
+
+                        List<Donation> customerDonations = donationRepo.getDonationsByCustomer(customer);
+
+                        // Display the filtered donations in the table
+                        tblConfigs.getItems().clear();
+                        tblConfigs.getItems().addAll(customerDonations);
+                    } catch (NoResultException e) {
+                        throwError("Please enter an existing customerID");
+                    }
+                } catch (Exception e) {
+                    // Handle exceptions as needed
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            // Handle exceptions as needed
+            e.printStackTrace();
+        }
     }
+
 
     private void filterByPrice(){
 
+    }
+
+    private void throwError(String error){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(error);
+        alert.showAndWait();
     }
 
 

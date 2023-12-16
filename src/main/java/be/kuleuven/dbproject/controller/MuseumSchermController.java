@@ -262,12 +262,35 @@ public class MuseumSchermController implements Controller {
             Optional<ButtonType> result = dialog.showAndWait();
             if(result.isPresent()){
                 if(result.get() == ButtonType.APPLY){
-                    String[] s = controller.getInput();
-                    int visitors = Integer.parseInt(s[1]);
-                    float revenue = Float.parseFloat(s[2]);
 
                     switch(state){
                         case Museums:
+                            String[] s = controller.getInput();
+                            if (s[0] == null || s[0].trim().isEmpty()) {
+                                throwError("Please enter a valid address.");
+                                return;
+                            }
+                            int visitors;
+                            try {
+                                visitors = Integer.parseInt(s[1]);
+                            } catch (NumberFormatException e) {
+                                throwError("Please enter a valid number for visitors.");
+                                return;
+                            }
+
+                            float revenue;
+                            try {
+                                revenue = Float.parseFloat(s[2]);
+                            } catch (NumberFormatException e) {
+                                throwError("Please enter a valid number for revenue.");
+                                return;
+                            }
+
+                            if (s[3] == null || s[3].trim().isEmpty()) {
+                                throwError("Please enter a valid country.");
+                                return;
+                            }
+
                             Museum museum = new Museum(s[0],visitors,revenue,s[3]);
                             museumRepo.addMuseum(museum);
                             showMuseums();
@@ -307,6 +330,14 @@ public class MuseumSchermController implements Controller {
         else{
             alert.setContentText("Please select a museum");
         }
+        alert.showAndWait();
+    }
+
+    private void throwError(String error){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(error);
         alert.showAndWait();
     }
 
