@@ -61,6 +61,14 @@ public class GameRepositoryJpaImpl {
         return entityManager.createQuery(query).getResultList();
     }
 
+    public List<GameInstance> getAllGameInstancesBasedOnMuseum(int MuseumID) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(GameInstance.class);
+        var root = query.from(GameInstance.class); //blijkbaar selecteerd hij default de hele klasse
+        query.where(criteriaBuilder.equal(root.get("museumID"),MuseumID));
+        return entityManager.createQuery(query).getResultList();
+    }
+
     public void addGame(Game g) {
 
         entityManager.getTransaction().begin();

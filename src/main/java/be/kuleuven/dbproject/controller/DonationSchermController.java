@@ -1,12 +1,16 @@
 package be.kuleuven.dbproject.controller;
 
+import be.kuleuven.dbproject.domain.Customer;
 import be.kuleuven.dbproject.domain.Donation;
 import be.kuleuven.dbproject.domain.Museum;
+import be.kuleuven.dbproject.repositories.CustomerRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.DonationRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -39,9 +43,12 @@ public class DonationSchermController implements Controller {
     private Donation selectedDonation;
     private State state = State.Donations;
     private DonationRepositoryJpaImpl donationRepo;
+    private CustomerRepositoryJpaImpl customerRepo;
+
     public DonationSchermController(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.donationRepo = new DonationRepositoryJpaImpl(entityManager);
+        this.customerRepo = new CustomerRepositoryJpaImpl(entityManager);
     }
 
     public void initialize() {
@@ -53,8 +60,13 @@ public class DonationSchermController implements Controller {
 
         btnClose.setOnAction(e ->{
             if(state != State.Donations){
-                state = State.Donations;
+                state = state.Donations;
                 showDonations();
+            }
+            else{
+                Node source = (Node) e.getSource();
+                Stage stage = (Stage) source.getScene().getWindow();
+                stage.close();
             }
         });
         /*
@@ -74,7 +86,7 @@ public class DonationSchermController implements Controller {
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
 
-        TableColumn<Donation, Integer > customurColumn = new TableColumn<>("Costumer");
+        TableColumn<Donation, String > customurColumn = new TableColumn<>("Costumer");
         TableColumn<Donation, LocalDate> dateColumn = new TableColumn<>("Date");
         TableColumn<Donation, Float> MoneyDonatedColumn = new TableColumn<>("Money Donated");
         //TableColumn<Museum, Float> revenueColumn = new TableColumn<>("revenue");
@@ -82,7 +94,9 @@ public class DonationSchermController implements Controller {
 
 
         //customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getCustomer().getCustomerID())));
-        customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getCustomerId()));
+        customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getCustomer().getCustomerID())));
+
+        //customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getCustomer().getCustomerID()));
         dateColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDate()));
         MoneyDonatedColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getMoneyDonated()));
 
@@ -138,9 +152,20 @@ public class DonationSchermController implements Controller {
                             LocalDate date = LocalDate.now();//LocalDate.parse(s[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                             //LocalDate date = LocalDate.parse(s[1]);
                             int customerId= Integer.parseInt(s[1]);
-                            Donation donation = new Donation(money,date,customerId);
-                            donationRepo.addDonation(donation);
-                            showDonations();
+                            Customer customer = customerRepo.getCustomerById(customerId);
+                            if(customer==null){
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Error");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Please enter existing customerID");
+                                alert.showAndWait();
+                                return;
+                            }
+                            else{
+                                Donation donation = new Donation(money,date,customer);
+                                donationRepo.addDonation(donation);
+                                showDonations();
+                            }
                             break;
                         /*case Loans:
                             Loan loan = new Loan(selectedCustomer, LocalDate.now(),LocalDate.of(Integer.valueOf(s[1]),

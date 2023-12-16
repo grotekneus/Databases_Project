@@ -50,6 +50,14 @@ public class CustomerRepositoryJpaImpl {
         return entityManager.createQuery(query).getResultList();
     }
 
+    public Customer getCustomerById(int customerId) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Customer.class);
+        var root = query.from(Customer.class);
+        query.where(criteriaBuilder.equal(root.get("customerID"), customerId));
+        return entityManager.createQuery(query).getSingleResult();
+    }
+
     public void addLoan(Loan loan) {
     }
 
