@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -53,6 +54,8 @@ public class DonationSchermController implements Controller {
         this.state = State.Donations;
         btnAdd.setOnAction(e->{add();});
         btnEdit.setOnAction(e->{edit();});
+        btnEdit.setVisible(false);
+
         btnFilterByName.setOnAction(e -> filterByName());
         btnFilterByPrice.setOnAction(e -> filterByPrice());
 
@@ -140,40 +143,58 @@ public class DonationSchermController implements Controller {
 
                     switch(state){
                         case Donations:
-                            float money = Float.parseFloat(s[0]);
-                            LocalDate date = LocalDate.now();//LocalDate.parse(s[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                            //LocalDate date = LocalDate.parse(s[1]);
-                            int customerId= Integer.parseInt(s[1]);
-                            Customer customer = customerRepo.getCustomerById(customerId);
-                            if(customer==null){
+                            float money;
+                            try {
+                                money = Float.parseFloat(s[0]);
+                            } catch (NumberFormatException e) {
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Error");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Please enter a number in money");
+                                alert.showAndWait();
+                                return;
+                            }
+                            LocalDate date = LocalDate.now();  // or parse the date if needed
+
+                            int customerId;
+                            try {
+                                customerId = Integer.parseInt(s[1]);
+                            } catch (NumberFormatException e) {
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Error");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Please enter a number in customerID");
+                                alert.showAndWait();
+                                return;
+                            }
+
+                            try {
+                                Customer customer = customerRepo.getCustomerById(customerId);
+                                if (customer == null) {
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Error");
+                                    alert.setHeaderText(null);
+                                    alert.setContentText("Please enter existing customerID");
+                                    alert.showAndWait();
+                                    //showAlert("Customer with ID " + customerId + " does not exist.");
+                                    return;
+                                }
+
+                                Donation donation = new Donation(money, date, customer);
+                                donationRepo.addDonation(donation);
+                                showDonations();
+                            } catch (NoResultException e) {
                                 Alert alert = new Alert(Alert.AlertType.ERROR);
                                 alert.setTitle("Error");
                                 alert.setHeaderText(null);
                                 alert.setContentText("Please enter existing customerID");
                                 alert.showAndWait();
-                                return;
+                                //showAlert("Customer with ID " + customerId + " does not exist.");
                             }
-                            else{
-                                Donation donation = new Donation(money,date,customer);
-                                donationRepo.addDonation(donation);
-                                showDonations();
-                            }
-                            break;
-                        /*case Loans:
-                            Loan loan = new Loan(selectedCustomer, LocalDate.now(),LocalDate.of(Integer.valueOf(s[1]),
-                                    Integer.valueOf(s[2]),
-                                    Integer.valueOf(s[3])));
-                            customerRepo.addLoan(loan);
-                            showLoans();
-                            break;
-                        case Purchases:
+
 
                             break;
-                        case Donations:
-
-                            break;
-
-                         */
+                        
                     }
                 }
             }

@@ -275,8 +275,8 @@ public class CustomerSchermController implements Controller {
                             new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
                     break;
                 case Donations:
-                    controller = new addCustomDialogController(new String[]{"Money Donated"},
-                            new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
+                    //controller = new addCustomDialogController(new String[]{"Money Donated"},
+                      //      new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
                     break;
             }
             fxmlLoader.setController(controller);
