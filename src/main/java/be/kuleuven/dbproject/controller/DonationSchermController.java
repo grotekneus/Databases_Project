@@ -87,14 +87,8 @@ public class DonationSchermController implements Controller {
         TableColumn<Donation, String > customurColumn = new TableColumn<>("Costumer");
         TableColumn<Donation, LocalDate> dateColumn = new TableColumn<>("Date");
         TableColumn<Donation, Float> MoneyDonatedColumn = new TableColumn<>("Money Donated");
-        //TableColumn<Museum, Float> revenueColumn = new TableColumn<>("revenue");
-        //TableColumn<Museum, Integer> visitorsColumn = new TableColumn<>("visitors");
-
-
-        //customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getCustomer().getCustomerID())));
         customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getCustomer().getCustomerID())));
 
-        //customurColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getCustomer().getCustomerID()));
         dateColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDate()));
         MoneyDonatedColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getMoneyDonated()));
 

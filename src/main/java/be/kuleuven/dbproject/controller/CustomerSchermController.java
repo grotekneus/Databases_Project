@@ -2,6 +2,7 @@ package be.kuleuven.dbproject.controller;
 
 import be.kuleuven.dbproject.domain.*;
 import be.kuleuven.dbproject.repositories.CustomerRepositoryJpaImpl;
+import be.kuleuven.dbproject.repositories.DonationRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,7 @@ import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,9 +46,13 @@ public class CustomerSchermController implements Controller {
     private Customer selectedCustomer;
     private State state = State.Customers;
     private CustomerRepositoryJpaImpl customerRepo;
+    private DonationRepositoryJpaImpl donationRepo;
+
     public CustomerSchermController(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.customerRepo = new CustomerRepositoryJpaImpl(entityManager);
+        this.donationRepo = new DonationRepositoryJpaImpl(entityManager);
+
     }
 
     public void initialize() {
@@ -222,7 +228,24 @@ public class CustomerSchermController implements Controller {
 
                             break;
                         case Donations:
-
+                            float money = Float.parseFloat(s[0]);
+                            LocalDate date = LocalDate.now();//LocalDate.parse(s[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            //LocalDate date = LocalDate.parse(s[1]);
+                            //int customerId= Integer.parseInt(s[1]);
+                            //Customer customer = customerRepo.getCustomerById(customerId);
+                            if(selectedCustomer==null){
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Error");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Please enter existing customerID");
+                                alert.showAndWait();
+                                return;
+                            }
+                            else{
+                                Donation donation = new Donation(money,date,selectedCustomer);
+                                donationRepo.addDonation(donation);
+                                showDonations();
+                            }
                             break;
                     }
                 }
