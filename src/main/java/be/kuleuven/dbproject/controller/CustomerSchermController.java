@@ -235,50 +235,53 @@ public class CustomerSchermController implements Controller {
 
     private void edit() {
         try{
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            addCustomDialogController controller = null;
-            fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
-            switch(state){
-                case Customers:
-                    controller = new addCustomDialogController(new String[]{"adress","email"},
-                            new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
-                    break;
-                case Loans:
-                    controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"},
-                            new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
-                    break;
-                case Purchases:
-                    controller = new addCustomDialogController(new String[]{"item type","item id"},
-                            new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
-                    break;
-                case Donations:
-                    controller = new addCustomDialogController(new String[]{"Money Donated"},
-                            new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
-                    break;
-            }
-            fxmlLoader.setController(controller);
-            DialogPane pane = fxmlLoader.load();
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.getDialogPane().setContent(pane);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL,ButtonType.APPLY);
-            Optional<ButtonType> result = dialog.showAndWait();
-            if(result.isPresent()){
-                if (result.get() == ButtonType.APPLY) {
-                    String[] s = controller.getInput();
-                    if (state == State.Customers){
-                        try{
-                            if(s[0] == ""){
-                                throw new NumberFormatException();
+            if(selectedCustomer != null){
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                addCustomDialogController controller = null;
+                fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
+                switch(state){
+                    case Customers:
+                        controller = new addCustomDialogController(new String[]{"adress","email"},
+                                new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
+                        break;
+                    case Loans:
+                        controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"},
+                                new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
+                        break;
+                    case Purchases:
+                        controller = new addCustomDialogController(new String[]{"item type","item id"},
+                                new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
+                        break;
+                    case Donations:
+                        controller = new addCustomDialogController(new String[]{"Money Donated"},
+                                new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
+                        break;
+                }
+                fxmlLoader.setController(controller);
+                DialogPane pane = fxmlLoader.load();
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.getDialogPane().setContent(pane);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL,ButtonType.APPLY);
+                Optional<ButtonType> result = dialog.showAndWait();
+                if(result.isPresent()){
+                    if (result.get() == ButtonType.APPLY) {
+                        String[] s = controller.getInput();
+                        if (state == State.Customers){
+                            try{
+                                if(s[0] == ""){
+                                    throw new NumberFormatException();
+                                }
+                                customerRepo.changeCustomerProperties(selectedCustomer,s[0],s[1]);
+                            } catch(NumberFormatException e) {
+                                showAlert();
+                                add();
                             }
-                            customerRepo.changeCustomerProperties(selectedCustomer,s[0],s[1]);
-                        } catch(NumberFormatException e) {
-                            showAlert();
-                            add();
+                            showCustomers();
                         }
-                        showCustomers();
                     }
                 }
             }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
