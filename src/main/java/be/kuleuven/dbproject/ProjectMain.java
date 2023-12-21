@@ -46,7 +46,7 @@ public class ProjectMain extends Application {
 
 
     public static void main(String[] args) {
-        String dbFilePath = "examples/java/project-template/VGHF.db";
+        String dbFilePath = "VGHF.db";
 
         // Delete the previous database file if it exists
         File dbFile = new File(dbFilePath);

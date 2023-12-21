@@ -23,7 +23,7 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:VGHF.db"/>
             <property name="javax.persistence.jdbc.user" value=""/>
             <property name="javax.persistence.jdbc.password" value=""/>
-            <property name="javax.persistence.schema-generation.database.action" value="update"/>
+            <property name="javax.persistence.schema-generation.database.action" value="none"/>
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.SQLiteDialect" />
             <property name="hibernate.connection.autocommit" value="true"/>
