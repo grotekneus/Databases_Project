@@ -45,6 +45,13 @@ public class DonationRepositoryJpaImpl {
 
         return entityManager.createQuery(query).getResultList();
     }
+
+    public void changeDonation(Donation donation, int value) {
+        entityManager.getTransaction().begin();
+        donation.setMoneyDonated(value);
+        entityManager.merge(donation);
+        entityManager.getTransaction().commit();
+    }
 }
 
 

@@ -66,4 +66,24 @@ public class GameRepositoryJpaImpl {
         entityManager.merge(selectedGInstance);
         entityManager.getTransaction().commit();
     }
+
+    public Game findGameByName(String name) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Game.class);
+        var root = query.from(Game.class);
+        query.where(criteriaBuilder.equal(root.get("name"),name));
+        return entityManager.createQuery(query).getSingleResult();
+    }
+
+    public String[] getAllGameNames(){
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Game.class);
+        var root = query.from(Game.class); //blijkbaar selecteerd hij default de hele klasse
+        var list = entityManager.createQuery(query).getResultList();
+        String[] results = new String[list.size()];
+        for(int i = 0; i< list.size(); i++){
+            results[i] = list.get(i).getName();
+        }
+        return results;
+    }
 }

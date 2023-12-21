@@ -3,6 +3,7 @@ package be.kuleuven.dbproject.repositories;
 import be.kuleuven.dbproject.domain.*;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 
 public class CustomerRepositoryJpaImpl {
@@ -59,6 +60,9 @@ public class CustomerRepositoryJpaImpl {
     }
 
     public void addLoan(Loan loan) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(loan);
+        entityManager.getTransaction().commit();
     }
 
     public void changeCustomerProperties(Customer selectedCustomer, String address, String email) {
@@ -76,4 +80,21 @@ public class CustomerRepositoryJpaImpl {
         query.where(criteriaBuilder.equal(root.get("name"), name));
         return entityManager.createQuery(query).getSingleResult();
     }
+
+
+    public void changeLoan(Loan loan, Game game, LocalDate date) {
+        entityManager.getTransaction().begin();
+        loan.setReturned(date);
+        loan.setGame(game);
+        entityManager.merge(loan);
+        entityManager.getTransaction().commit();
+    }
+
+
+    public void addPurchase(Purchase purchase) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(purchase);
+        entityManager.getTransaction().commit();
+    }
+
 }

@@ -67,6 +67,7 @@ public class addCustomDialogController implements Controller {
         this.cBoxItems = cBoxItems;
     }
 
+
     public void initialize(){
         cBox1.setValue("");
         cBox2.setValue("");
