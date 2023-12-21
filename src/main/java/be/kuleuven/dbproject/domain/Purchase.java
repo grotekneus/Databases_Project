@@ -16,7 +16,18 @@ public class Purchase {
     @GeneratedValue
     private int purchaseID;
 
-    public Purchase() {
+    public void setItemType(ItemType itemType) {
+        this.itemType = itemType;
+    }
+
+    public void setItemID(int itemID) {
+        this.itemID = itemID;
+    }
+
+    public Purchase(Customer customer, ItemType itemType, int itemID) {
+        this.customer = customer;
+        this.itemType = itemType;
+        this.itemID = itemID;
     }
 
     public ItemType getItemType() {
@@ -24,7 +35,7 @@ public class Purchase {
     }
 
 
-    public Customer getCustomerID() {
+    public Customer getCustomer() {
         return customer;
     }
 

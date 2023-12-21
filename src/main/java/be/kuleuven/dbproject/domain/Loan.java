@@ -14,6 +14,7 @@ public class Loan {
     @Id
     @Column
     private LocalDate date;
+
     @Column
     private LocalDate returned;
 
@@ -47,4 +48,9 @@ public class Loan {
     public void setReturned(LocalDate returned) {
         this.returned = returned;
     }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
 }
