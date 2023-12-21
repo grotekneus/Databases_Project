@@ -4,35 +4,38 @@ import javax.persistence.*;
 
 @Entity
 public class GameInstance {
-    //@ManyToOne
-    //@JoinColumn
-    @Column
-    private int gameID;
+
+    @ManyToOne
+    @JoinColumn
+    //@Column
+    private Game game;
+    @ManyToOne
+    @JoinColumn
+    private Museum museum;
+
+    public GameInstance(Game game, Museum museum) {
+        this.game = game;
+        this.museum = museum;
+    }
+
     @Column
     @Id
     @GeneratedValue
     private int gameInstanceID;
-    @Column
-    private int museumID;
 
-    public GameInstance(int gameID, int museumID) {
-        this.gameID = gameID;
-        this.museumID = museumID;
+    public Game getGame() {
+        return game;
     }
 
-    public int getGameID() {
-        return gameID;
+    public Museum getMuseum() {
+        return museum;
+    }
+
+    public void setMuseum(Museum museum) {
+        this.museum = museum;
     }
 
     public int getGameInstanceID() {
         return gameInstanceID;
-    }
-
-    public int getMuseumID() {
-        return museumID;
-    }
-
-    public void setMuseumID(int id){
-        this.museumID = id;
     }
 }

@@ -81,17 +81,17 @@ public class GameSchermController implements Controller {
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
 
-        TableColumn<GameInstance, String> gameIDColumn = new TableColumn<>("GameID");
+        TableColumn<GameInstance, String> gameNameColumn = new TableColumn<>("Game name");
         TableColumn<GameInstance, String> gameInstanceColumn = new TableColumn<>("GameInstanceID");
-        TableColumn<GameInstance, String> museumColumn = new TableColumn<>("MuseumID");
+        TableColumn<GameInstance, String> museumColumn = new TableColumn<>("Museum address");
 
-        gameIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGameID())));
+        gameNameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGame().getName())));
         gameInstanceColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGameInstanceID())));
-        museumColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getMuseumID())));
+        museumColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getMuseum().getAddress())));
 
 
-        tblConfigs.getColumns().addAll(gameIDColumn,gameInstanceColumn,museumColumn);
-        List<GameInstance> gameInstances = gameRepo.getAllGameInstances(selectedGame.getGameID());
+        tblConfigs.getColumns().addAll(gameNameColumn,gameInstanceColumn,museumColumn);
+        List<GameInstance> gameInstances = gameRepo.getAllGameInstances(selectedGame);
         tblConfigs.getItems().clear();
         for (GameInstance instance : gameInstances) {
             tblConfigs.getItems().add(instance);
@@ -138,7 +138,7 @@ public class GameSchermController implements Controller {
                                 throw new NumberFormatException();
                             }
                             var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
-                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]).getMuseumID(),selectedGInstance);
+                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]),selectedGInstance);
                         } catch(NumberFormatException e) {
                             showAlert();
                             edit();
@@ -193,7 +193,7 @@ public class GameSchermController implements Controller {
                             if(s[0] == ""){
                                 throw new NumberFormatException();
                             }
-                            GameInstance gInstance = new GameInstance(selectedGame.getGameID(),museumRepo.getMuseumByAddress(s[0]).getMuseumID());
+                            GameInstance gInstance = new GameInstance(selectedGame,museumRepo.getMuseumByAddress(s[0]));
                             gameRepo.addGameInstance(gInstance);
                         } catch(NumberFormatException e) {
                             showAlert();
