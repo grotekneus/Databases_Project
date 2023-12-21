@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.lightcouch.CouchDbClient;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -47,6 +48,7 @@ public class ProjectMain extends Application {
 
     public static void main(String[] args) {
         String dbFilePath = "examples/java/project-template/VGHF.db";
+        CouchDbClient client = new CouchDbClient("couchdb.properties");
 
         // Delete the previous database file if it exists
         File dbFile = new File(dbFilePath);

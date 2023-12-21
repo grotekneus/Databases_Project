@@ -22,19 +22,19 @@ public class GameRepositoryJpaImpl {
         return entityManager.createQuery(query).getResultList();
     }
 
-    public List<GameInstance> getAllGameInstances(int GameID) {
+    public List<GameInstance> getAllGameInstances(Game game) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(GameInstance.class);
         var root = query.from(GameInstance.class); //blijkbaar selecteerd hij default de hele klasse
-        query.where(criteriaBuilder.equal(root.get("gameID"),GameID));
+        query.where(criteriaBuilder.equal(root.get("game"),game));
         return entityManager.createQuery(query).getResultList();
     }
 
-    public List<GameInstance> getAllGameInstancesBasedOnMuseum(int MuseumID) {
+    public List<GameInstance> getAllGameInstancesBasedOnMuseum(Museum museum) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(GameInstance.class);
         var root = query.from(GameInstance.class); //blijkbaar selecteerd hij default de hele klasse
-        query.where(criteriaBuilder.equal(root.get("museumID"),MuseumID));
+        query.where(criteriaBuilder.equal(root.get("museum"),museum));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -60,9 +60,9 @@ public class GameRepositoryJpaImpl {
         entityManager.getTransaction().commit();
     }
 
-        public void changeGameInstanceMuseum(int museumID, GameInstance selectedGInstance) {
+        public void changeGameInstanceMuseum(Museum museum, GameInstance selectedGInstance) {
         entityManager.getTransaction().begin();
-        selectedGInstance.setMuseumID(museumID);
+        selectedGInstance.setMuseum(museum);
         entityManager.merge(selectedGInstance);
         entityManager.getTransaction().commit();
     }

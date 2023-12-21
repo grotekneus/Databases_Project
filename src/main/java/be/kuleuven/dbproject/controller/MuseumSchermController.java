@@ -128,24 +128,25 @@ public class MuseumSchermController implements Controller {
     }
 
     private void searchGames(){
+        state=State.Games;
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
 
-        TableColumn<GameInstance, String> gameIDColumn = new TableColumn<>("GameID");
+        TableColumn<GameInstance, String> gameNameColumn = new TableColumn<>("Game name");
         TableColumn<GameInstance, String> gameInstanceColumn = new TableColumn<>("GameInstanceID");
-        TableColumn<GameInstance, String> museumColumn = new TableColumn<>("MuseumID");
+        TableColumn<GameInstance, String> museumColumn = new TableColumn<>("Museum address");
 
-        gameIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGameID())));
+        gameNameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGame().getName())));
         gameInstanceColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGameInstanceID())));
-        museumColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getMuseumID())));
+        museumColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getMuseum().getAddress())));
 
-        tblConfigs.getColumns().addAll(gameIDColumn, gameInstanceColumn, museumColumn);
 
+        tblConfigs.getColumns().addAll(gameNameColumn,gameInstanceColumn,museumColumn);
         // Get the selected museum
         //Museum selectedMuseum = (Museum) tblConfigs.getSelectionModel().getSelectedItem();
 
         if (selectedMuseum != null) {
-            List<GameInstance> gameInstances = gameRepo.getAllGameInstancesBasedOnMuseum(selectedMuseum.getMuseumID());
+            List<GameInstance> gameInstances = gameRepo.getAllGameInstancesBasedOnMuseum(selectedMuseum);
             tblConfigs.getItems().addAll(gameInstances);
         } else {
             // Handle the case where selectedMuseum is null
