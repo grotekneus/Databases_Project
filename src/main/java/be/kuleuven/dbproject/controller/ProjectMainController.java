@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 public class ProjectMainController {
 
 
+
     @FXML
     private Button btnConfigAttaches;
     @FXML
@@ -31,13 +32,21 @@ public class ProjectMainController {
     @FXML
     private Button ShopItems;
 
+    private final boolean isAdmin;
     private EntityManager entityManager;
-    public ProjectMainController(EntityManager em) {
+    public ProjectMainController(EntityManager em,boolean isAdmin) {
         this.entityManager= em;
+        this.isAdmin = isAdmin;
     }
 
     public void initialize() {
-        btnAdmin.setOnAction(e -> showBeheerScherm("admin"));
+        if(isAdmin){
+            btnAdmin.setOnAction(e -> showBeheerScherm("admin"));
+        }
+        else{
+            btnAdmin.setVisible(false);
+        }
+
         btnConfigAttaches.setOnAction(e -> showBeheerScherm("attaches"));
         Customers.setOnAction(e -> showBeheerScherm("customer"));
         ShopItems.setOnAction(e -> showBeheerScherm("shopitem"));

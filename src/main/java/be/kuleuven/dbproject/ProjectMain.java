@@ -1,5 +1,6 @@
 package be.kuleuven.dbproject;
 
+import be.kuleuven.dbproject.controller.LoginController;
 import be.kuleuven.dbproject.controller.ProjectMainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +33,17 @@ public class ProjectMain extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         rootStage = stage;
+        LoginController loginController = new LoginController(entityManager);
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("loginscherm.fxml"));
+        loader.setController(loginController);
+        var root = (AnchorPane) loader.load();
+
+        Scene scene = new Scene(root);
+
+        stage.setTitle("DAdministratie hoofdscherm");
+        stage.setScene(scene);
+        stage.show();
+        /*
         ProjectMainController mainController = new ProjectMainController(entityManager);
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("main.fxml"));
         loader.setController(mainController);
@@ -41,7 +53,7 @@ public class ProjectMain extends Application {
 
         stage.setTitle("DAdministratie hoofdscherm");
         stage.setScene(scene);
-        stage.show();
+        stage.show();*/
     }
 
 

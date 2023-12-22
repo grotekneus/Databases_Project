@@ -18,6 +18,7 @@ dependencies {
     implementation group: 'com.zsoltfabok', name: 'sqlite-dialect', version: '1.0'
     implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.4.23.Final'
     implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
