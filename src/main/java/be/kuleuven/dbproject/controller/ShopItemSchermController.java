@@ -160,8 +160,16 @@ public class ShopItemSchermController implements Controller {
 
                     switch(state){
                         case ShopItems:
-                            float price= Float.parseFloat(s[3]);
+                            float price;
+                            try {
+                                price = Float.parseFloat(s[3]);
+                            } catch (NumberFormatException e) {
+                                throwError("Please enter a number in price");
+                                return;
+                            }
+                            //float price= Float.parseFloat(s[3]);
                             ItemType itemType = ItemType.valueOf(s[1]);
+
 
                             ShopItem shopItem = new ShopItem(s[2],price,museumRepo.getMuseumByAddress(s[0]),itemType);
                             shopItemRepo.addShopItem(shopItem);
@@ -248,11 +256,15 @@ public class ShopItemSchermController implements Controller {
                     String[] s = controller.getInput();
                     if (state == State.ShopItems){
                         try{
-                            //if(s[0] == ""){
-                            //  throw new NumberFormatException();
-                            //}
                             Museum museum = museumRepo.getMuseumByAddress(s[0]);
-                            selectedShopItem.setPrice(Float.parseFloat(s[1]));
+                            float price;
+                            try {
+                                price = Float.parseFloat(s[1]);
+                            } catch (NumberFormatException e) {
+                                throwError("Please enter a number in price");
+                                return;
+                            }
+                            selectedShopItem.setPrice(price);
                             selectedShopItem.setMuseum(museum);
                             shopItemRepo.updateShopItem(selectedShopItem);
                         } catch(NumberFormatException e) {
@@ -323,6 +335,14 @@ public class ShopItemSchermController implements Controller {
         else{
             alert.setContentText("Please select a shopitem");
         }
+        alert.showAndWait();
+    }
+
+    private void throwError(String error){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(error);
         alert.showAndWait();
     }
 
