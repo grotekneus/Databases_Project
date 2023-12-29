@@ -227,9 +227,8 @@ public class ShopItemSchermController implements Controller {
                         alert.showAndWait();
                         return;
                     }
-
-                    controller = new addCustomDialogController(new String[]{"price","location"},
-                            new String[]{String.valueOf(selectedShopItem.getPrice()),selectedShopItem.getMuseum().getAddress(), selectedShopItem.getName()});
+                    controller = new addCustomDialogController(true, new String[]{"addres","price"}
+                            ,new String[][]{museumRepo.getAllMuseumAdresses()});
                     break;
                 /*case Games:
                     controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"},
@@ -252,8 +251,8 @@ public class ShopItemSchermController implements Controller {
                             //if(s[0] == ""){
                             //  throw new NumberFormatException();
                             //}
-                            Museum museum = museumRepo.getMuseumByAddress(s[1]);
-                            selectedShopItem.setPrice(Float.parseFloat(s[0]));
+                            Museum museum = museumRepo.getMuseumByAddress(s[0]);
+                            selectedShopItem.setPrice(Float.parseFloat(s[1]));
                             selectedShopItem.setMuseum(museum);
                             shopItemRepo.updateShopItem(selectedShopItem);
                         } catch(NumberFormatException e) {
