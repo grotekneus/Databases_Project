@@ -147,17 +147,42 @@ public class ShopItemSchermController implements Controller {
             dialog.getDialogPane().setContent(pane);
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL,ButtonType.APPLY);
             Optional<ButtonType> result = dialog.showAndWait();
-            if(result.isPresent()){
+            if (result.isPresent() && result.get() == ButtonType.APPLY) {
+                String[] s = controller.getInput();
+                if (state == State.ShopItems) {
+                    float price;
+                    try {
+                        price = Float.parseFloat(s[3]);
+                    } catch (NumberFormatException e) {
+                        throwError("Please enter a number in price");
+                        return;
+                    }
+
+                    // Check if a museum is selected
+                    if (s[0] == null || s[0].isEmpty()) {
+                        throwError("Please select a museum");
+                        return;
+                    }
+                    //check if a item type has been selected
+                    if (s[1] == null || s[1].isEmpty()) {
+                        throwError("Please select an item type");
+                        return;
+                    }
+                    //check if item has a name
+                    if (s[2] == null || s[2].trim().isEmpty()) {
+                        throwError("Please enter a name");
+                        return;
+                    }
+
+                    ItemType itemType = ItemType.valueOf(s[1]);
+                    ShopItem shopItem = new ShopItem(s[2], price, museumRepo.getMuseumByAddress(s[0]), itemType);
+                    shopItemRepo.addShopItem(shopItem);
+                    showShopItems();
+                }
+            }
+            /*if(result.isPresent()){
                 if(result.get() == ButtonType.APPLY){
                     String[] s = controller.getInput();
-                    //int visitors = Integer.parseInt(s[1]);
-                    //System.out.println("Converted to int: " + visitors);
-
-
-                    //float revenue = Float.parseFloat(s[2]);
-                    //System.out.println("Converted to float: " + revenue);
-
-
                     switch(state){
                         case ShopItems:
                             float price;
@@ -167,53 +192,16 @@ public class ShopItemSchermController implements Controller {
                                 throwError("Please enter a number in price");
                                 return;
                             }
-                            //float price= Float.parseFloat(s[3]);
                             ItemType itemType = ItemType.valueOf(s[1]);
-
-
                             ShopItem shopItem = new ShopItem(s[2],price,museumRepo.getMuseumByAddress(s[0]),itemType);
                             shopItemRepo.addShopItem(shopItem);
                             showShopItems();
-                            /*
-                            float money = Float.parseFloat(s[0]);
-                            LocalDate date = LocalDate.now();//LocalDate.parse(s[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                            //LocalDate date = LocalDate.parse(s[1]);
-                            int customerId= Integer.parseInt(s[1]);
-                            Customer customer = customerRepo.getCustomerById(customerId);
-                            if(customer==null){
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Error");
-                                alert.setHeaderText(null);
-                                alert.setContentText("Please enter existing customerID");
-                                alert.showAndWait();
-                                return;
-                            }
-                            else{
-                                Donation donation = new Donation(money,date,customer);
-                                donationRepo.addDonation(donation);
-                                showDonations();
-                            }
-
-                             */
                             break;
-                        /*case Loans:
-                            Loan loan = new Loan(selectedCustomer, LocalDate.now(),LocalDate.of(Integer.valueOf(s[1]),
-                                    Integer.valueOf(s[2]),
-                                    Integer.valueOf(s[3])));
-                            customerRepo.addLoan(loan);
-                            showLoans();
-                            break;
-                        case Purchases:
-
-                            break;
-                        case Donations:
-
-                            break;
-
-                         */
                     }
                 }
             }
+
+             */
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -251,7 +239,35 @@ public class ShopItemSchermController implements Controller {
             dialog.getDialogPane().setContent(pane);
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL,ButtonType.APPLY);
             Optional<ButtonType> result = dialog.showAndWait();
-            if(result.isPresent()){
+            if (result.isPresent() && result.get() == ButtonType.APPLY) {
+                String[] s = controller.getInput();
+                if (state == State.ShopItems) {
+                    float price;
+                    try {
+                        price = Float.parseFloat(s[1]);
+                    } catch (NumberFormatException e) {
+                        throwError("Please enter a number in price");
+                        return;
+                    }
+
+                    // Check if a museum is selected
+
+                    if (s[0] == null || s[0].isEmpty()) {
+                        throwError("Please select a museum");
+                        return;
+                    }
+                    Museum museum = museumRepo.getMuseumByAddress(s[0]);
+                    selectedShopItem.setPrice(price);
+                    selectedShopItem.setMuseum(museum);
+                    shopItemRepo.updateShopItem(selectedShopItem);
+
+                    //ItemType itemType = ItemType.valueOf(s[1]);
+                    //ShopItem shopItem = new ShopItem(s[2], price, museumRepo.getMuseumByAddress(s[0]), itemType);
+                    //shopItemRepo.addShopItem(shopItem);
+                    showShopItems();
+                }
+            }
+            /*if(result.isPresent()){
                 if (result.get() == ButtonType.APPLY) {
                     String[] s = controller.getInput();
                     if (state == State.ShopItems){
@@ -275,6 +291,8 @@ public class ShopItemSchermController implements Controller {
                     }
                 }
             }
+
+             */
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
