@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public class Loan {
     @ManyToOne
     @JoinColumn
-    private Game game;
+    private GameInstance gameinstance;
     @ManyToOne
     @JoinColumn
     private Customer customer;
@@ -18,15 +18,15 @@ public class Loan {
     @Column
     private LocalDate returned;
 
-    public Loan(Customer customer, LocalDate date, LocalDate returned, Game game) {
+    public Loan(Customer customer, LocalDate date, LocalDate returned, GameInstance gameinstance) {
         this.customer = customer;
         this.date = date;
         this.returned = returned;
-        this.game = game;
+        this.gameinstance = gameinstance;
     }
 
-    public Game getGame() {
-        return game;
+    public GameInstance getGameInstance() {
+        return gameinstance;
     }
 
     public Customer getCustomer() {
@@ -49,8 +49,8 @@ public class Loan {
         this.returned = returned;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameInstance(GameInstance gameinstance) {
+        this.gameinstance = gameinstance;
     }
 
 }

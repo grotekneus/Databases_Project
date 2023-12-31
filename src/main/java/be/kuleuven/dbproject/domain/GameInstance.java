@@ -13,15 +13,27 @@ public class GameInstance {
     @JoinColumn
     private Museum museum;
 
-    public GameInstance(Game game, Museum museum) {
-        this.game = game;
-        this.museum = museum;
-    }
-
     @Column
     @Id
     @GeneratedValue
     private int gameInstanceID;
+
+    @ManyToOne
+    @JoinColumn
+    private Console console;
+
+    public GameInstance(Game game, Museum museum,Console console) {
+        this.game = game;
+        this.museum = museum;
+    }
+
+    public Console getConsole() {
+        return console;
+    }
+
+    public void setConsole(Console console) {
+        this.console = console;
+    }
 
     public Game getGame() {
         return game;

@@ -3,7 +3,6 @@ package be.kuleuven.dbproject.repositories;
 import be.kuleuven.dbproject.domain.*;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDate;
 import java.util.List;
 
 public class GameRepositoryJpaImpl {
@@ -28,6 +27,18 @@ public class GameRepositoryJpaImpl {
         var root = query.from(GameInstance.class); //blijkbaar selecteerd hij default de hele klasse
         query.where(criteriaBuilder.equal(root.get("game"),game));
         return entityManager.createQuery(query).getResultList();
+    }
+
+    public String[] getAllGameInstanceNames() {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(GameInstance.class);
+        var root = query.from(GameInstance.class); //blijkbaar selecteerd hij default de hele klasse
+        List<GameInstance> Instances =  entityManager.createQuery(query).getResultList();
+        String[] results = new String[Instances.size()];
+        for(int i = 0; i< Instances.size(); i++){
+            results[i] = String.valueOf(Instances.get(i).getGameInstanceID());
+        }
+        return results;
     }
 
     public List<GameInstance> getAllGameInstancesBasedOnMuseum(Museum museum) {
@@ -85,5 +96,61 @@ public class GameRepositoryJpaImpl {
             results[i] = list.get(i).getName();
         }
         return results;
+    }
+
+    public GameInstance findGameInstanceByID(Integer id) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(GameInstance.class);
+        var root = query.from(GameInstance.class);
+        query.where(criteriaBuilder.equal(root.get("gameInstanceID"),id));
+        return entityManager.createQuery(query).getSingleResult();
+    }
+
+    public List<Genre> getGameGenres(Game selectedGame) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Game.class);
+        var root = query.from(Game.class);
+        query.where(criteriaBuilder.equal(root.get("gameID"),selectedGame.getGameID()));
+        return entityManager.createQuery(query).getSingleResult().getGenres();
+    }
+
+    public void addGenreToGame(Game selectedGame, Genre genre) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Game.class);
+        var root = query.from(Game.class);
+        query.where(criteriaBuilder.equal(root.get("gameID"),selectedGame.getGameID()));
+        if(!selectedGame.getGenres().contains(genre)){
+            entityManager.getTransaction().begin();
+            selectedGame.addGenre(genre);
+            genre.addGame(selectedGame);
+            entityManager.getTransaction().commit();
+        }
+    }
+
+    public void changeGameInstanceConsole(GameInstance selectedGInstance, Console console) {
+        entityManager.getTransaction().begin();
+        selectedGInstance.setConsole(console);
+        entityManager.getTransaction().commit();
+    }
+
+    public List<Console> getGameConsoles(Game selectedGame) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Game.class);
+        var root = query.from(Game.class);
+        query.where(criteriaBuilder.equal(root.get("gameID"),selectedGame.getGameID()));
+        return entityManager.createQuery(query).getSingleResult().getConsoles();
+    }
+
+    public void addConsoleToGame(Game selectedGame, Console console) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(Game.class);
+        var root = query.from(Game.class);
+        query.where(criteriaBuilder.equal(root.get("gameID"),selectedGame.getGameID()));
+        if(!selectedGame.getGenres().contains(console)){
+            entityManager.getTransaction().begin();
+            selectedGame.addConsole(console);
+            console.addGame(selectedGame);
+            entityManager.getTransaction().commit();
+        }
     }
 }

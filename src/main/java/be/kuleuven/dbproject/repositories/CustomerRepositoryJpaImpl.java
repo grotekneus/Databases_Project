@@ -65,10 +65,11 @@ public class CustomerRepositoryJpaImpl {
         entityManager.getTransaction().commit();
     }
 
-    public void changeCustomerProperties(Customer selectedCustomer, String address, String email) {
+    public void changeCustomerProperties(Customer selectedCustomer, String address, String email, String fullName) {
         entityManager.getTransaction().begin();
         selectedCustomer.setAddress(address);
         selectedCustomer.setEmail(email);
+        selectedCustomer.setFullName(fullName);
         entityManager.merge(selectedCustomer);
         entityManager.getTransaction().commit();
     }
@@ -82,19 +83,15 @@ public class CustomerRepositoryJpaImpl {
     }
 
 
-    public void changeLoan(Loan loan, Game game, LocalDate date) {
-        entityManager.getTransaction().begin();
-        loan.setReturned(date);
-        loan.setGame(game);
-        entityManager.merge(loan);
-        entityManager.getTransaction().commit();
-    }
-
-
     public void addPurchase(Purchase purchase) {
         entityManager.getTransaction().begin();
         entityManager.persist(purchase);
         entityManager.getTransaction().commit();
     }
 
+    public void deleteLoan(Loan selectedLoan) {
+        entityManager.getTransaction().begin();
+        entityManager.remove(selectedLoan);
+        entityManager.getTransaction().commit();
+    }
 }

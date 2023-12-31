@@ -4,6 +4,7 @@ import be.kuleuven.dbproject.domain.*;
 import be.kuleuven.dbproject.repositories.CustomerRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.DonationRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
+import be.kuleuven.dbproject.repositories.ShopItemRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +26,8 @@ public class CustomerSchermController implements Controller {
         Purchases,
         Donations
     }
-
+    @FXML
+    private Button btnSearch;
     @FXML
     private Button btnEdit;
     @FXML
@@ -42,6 +44,8 @@ public class CustomerSchermController implements Controller {
     private TableView tblConfigs;
     @FXML
     private ChoiceBox<AdminSchermController.Tables> choiceBox;
+    @FXML
+    private Button btnDelete;
 
     private EntityManager entityManager;
     private Customer selectedCustomer;
@@ -57,11 +61,15 @@ public class CustomerSchermController implements Controller {
     }
 
     public void initialize() {
+        btnSearch.setOnAction(e -> searchCustomer());
         this.state = State.Customers;
+        btnDelete.setVisible(false);
+        btnDelete.setOnAction(e -> deleteLoan());
         btnShowLoans.setOnAction(e->showLoans());
         btnShowDonations.setOnAction(e -> showDonations());
         btnShowPurchases.setOnAction(e -> {
             btnEdit.setVisible(false);
+            btnSearch.setVisible(false);
             showPurchases();
         });
         btnAdd.setOnAction(e -> {
@@ -78,6 +86,8 @@ public class CustomerSchermController implements Controller {
                 state = State.Customers;
                 showCustomers();
                 btnEdit.setVisible(true);
+                btnDelete.setVisible(false);
+                btnSearch.setVisible(true);
             }
             else{
                 var stage = (Stage) btnClose.getScene().getWindow();
@@ -98,7 +108,13 @@ public class CustomerSchermController implements Controller {
         showCustomers();
     }
 
-
+    private void deleteLoan() {
+        var selectedLoan = (Loan) tblConfigs.getSelectionModel().getSelectedItem();
+        if(selectedLoan != null){
+            customerRepo.deleteLoan(selectedLoan);
+            showLoans();
+        }
+    }
 
 
     private void showPurchases() {
@@ -128,7 +144,9 @@ public class CustomerSchermController implements Controller {
     }
 
     private void showLoans() {
-
+        btnDelete.setVisible(true);
+        btnEdit.setVisible(false);
+        btnSearch.setVisible(false);
         if (selectedCustomer != null) {
             this.state = State.Loans;
             btnShowPurchases.setVisible(false);
@@ -144,7 +162,7 @@ public class CustomerSchermController implements Controller {
             customerIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getCustomer().getCustomerID())));
             returneDateColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getReturned().toString()));
             dateColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDate().toString()));
-            gameIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGame().getGameID())));
+            gameIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGameInstance().getGameInstanceID())));
 
             tblConfigs.getColumns().addAll(dateColumn, returneDateColumn, customerIDColumn, gameIDColumn);
             List<Loan> loans = customerRepo.getLoans(selectedCustomer);
@@ -155,7 +173,8 @@ public class CustomerSchermController implements Controller {
     }
 
     private void showDonations() {
-
+        btnEdit.setVisible(false);
+        btnSearch.setVisible(false);
         if (selectedCustomer != null) {
             this.state = State.Donations;
             btnShowPurchases.setVisible(false);
@@ -192,7 +211,7 @@ public class CustomerSchermController implements Controller {
                     break;
                 case Loans:
                     var gameRepo = new GameRepositoryJpaImpl(entityManager);
-                    controller = new addCustomDialogController(true, new String[]{"game", "Year", "Month", "Day"}, new String[][]{gameRepo.getAllGameNames()});
+                    controller = new addCustomDialogController(true, new String[]{"game", "Year", "Month", "Day"}, new String[][]{gameRepo.getAllGameInstanceNames()});
                     break;
                 case Purchases:
                     ItemType[] itemTypes = ItemType.values();
@@ -231,22 +250,24 @@ public class CustomerSchermController implements Controller {
                             Loan loan = new Loan(selectedCustomer, LocalDate.now(), LocalDate.of(Integer.valueOf(s[1])
                                     , Integer.valueOf(s[2])
                                     , Integer.valueOf(s[3]))
-                                    , gameRepo.findGameByName(s[0]));
+                                    , gameRepo.findGameInstanceByID(Integer.valueOf(s[0])));
                             customerRepo.addLoan(loan);
                             showLoans();
                             break;
                         case Purchases:
                             ItemType itemType = ItemType.valueOf(s[0]);
+                            ShopItemRepositoryJpaImpl shopitems = new ShopItemRepositoryJpaImpl(entityManager);
+                            ShopItem shopItem = shopitems.getShopItemById(Integer.parseInt(s[1]));
+                            if(shopItem == null){
+                                showAlert();
+                            }
                             Purchase purchase = new Purchase(selectedCustomer, itemType, Integer.parseInt(s[1]));
                             customerRepo.addPurchase(purchase);
                             showPurchases();
                             break;
                         case Donations:
                             float money = Float.parseFloat(s[0]);
-                            LocalDate date = LocalDate.now();//LocalDate.parse(s[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                            //LocalDate date = LocalDate.parse(s[1]);
-                            //int customerId= Integer.parseInt(s[1]);
-                            //Customer customer = customerRepo.getCustomerById(customerId);
+                            LocalDate date = LocalDate.now();
                             if (selectedCustomer == null) {
                                 Alert alert = new Alert(Alert.AlertType.ERROR);
                                 alert.setTitle("Error");
@@ -273,31 +294,14 @@ public class CustomerSchermController implements Controller {
     private void edit() {
         try{
             if(selectedCustomer != null){
+                if(state != State.Customers) {
+                    return;
+                }
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                addCustomDialogController controller = null;
+                addCustomDialogController controller = new addCustomDialogController(new String[]{"full name","adress","email"},
+                        new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
                 var selectedItem = tblConfigs.getSelectionModel().getSelectedItem();
                 fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
-                switch(state){
-                    case Customers:
-                        controller = new addCustomDialogController(new String[]{"adress","email"},
-                                new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
-                        break;
-                    case Loans:
-                        Loan selectedLoan = (Loan) selectedItem;
-                        controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"},
-                                new String[]{String.valueOf(selectedLoan.getGame().getGameID())
-                                        ,String.valueOf(selectedLoan.getDate().getYear())
-                                        ,String.valueOf(selectedLoan.getDate().getMonth())
-                                        ,String.valueOf(selectedLoan.getDate().getDayOfMonth())});
-                        break;
-                    case Donations:
-                        Donation selectedDonation = (Donation) selectedItem;
-                        controller = new addCustomDialogController(new String[]{"Money Donated"},
-                                new String[]{String.valueOf(selectedDonation.getMoneyDonated())});
-                        break;
-                    default:
-                        return;
-                }
                 fxmlLoader.setController(controller);
                 DialogPane pane = fxmlLoader.load();
                 Dialog<ButtonType> dialog = new Dialog<>();
@@ -314,18 +318,8 @@ public class CustomerSchermController implements Controller {
                                 }
                             }
                             if (state == State.Customers) {
-                                customerRepo.changeCustomerProperties(selectedCustomer, s[0], s[1]);
+                                customerRepo.changeCustomerProperties(selectedCustomer, s[1], s[2],s[0]);
                                 showCustomers();
-                            } else if (state == State.Donations) {
-                                var donationRepo = new DonationRepositoryJpaImpl(entityManager);
-                                donationRepo.changeDonation((Donation) selectedItem,Integer.parseInt(s[0]));
-                                showDonations();
-                            } else if (state == State.Loans) {
-                                LocalDate date = LocalDate.of(Integer.parseInt(s[1]),Integer.parseInt(s[2]),Integer.parseInt(s[3]));
-                                var gameRepo = new GameRepositoryJpaImpl(entityManager);
-                                Game game = gameRepo.findGameByName(s[0]);
-                                customerRepo.changeLoan((Loan) selectedItem,game,date);
-                                showLoans();
                             }
                         }
                     } catch(NumberFormatException e) {
@@ -370,6 +364,34 @@ public class CustomerSchermController implements Controller {
         tblConfigs.getItems().clear();
         for (Customer customer : customers) {
             tblConfigs.getItems().add(customer);
+        }
+    }
+
+    private void searchCustomer(){
+        try {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Search customers");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Enter customer name:");
+
+            Optional<String> result = dialog.showAndWait();
+
+            result.ifPresent(name -> {
+                Customer customer = customerRepo.getCustomer(name);
+
+                if (customer==null) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Search Result");
+                    alert.setHeaderText(null);
+                    alert.setContentText("No customers found with that name");
+                    alert.showAndWait();
+                } else {
+                    tblConfigs.getSelectionModel().clearSelection();
+                    tblConfigs.getSelectionModel().select(customer);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

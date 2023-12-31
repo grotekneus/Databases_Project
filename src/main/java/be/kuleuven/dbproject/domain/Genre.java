@@ -1,19 +1,20 @@
 package be.kuleuven.dbproject.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Genre {
-    @Column
+    @Column(name="genreId")
     @Id
     @GeneratedValue
-    private int GenreID;
+    private int genreId;
     @Column
     private String description;
 
+    @ManyToMany(mappedBy = "genres")
+    private List<Game> games;
     public Genre(String description) {
         this.description = description;
     }
@@ -27,6 +28,10 @@ public class Genre {
     }
 
     public int getGenreID() {
-        return GenreID;
+        return genreId;
+    }
+
+    public void addGame(Game g){
+        this.games.add(g);
     }
 }

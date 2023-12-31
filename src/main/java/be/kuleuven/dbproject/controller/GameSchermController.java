@@ -19,8 +19,7 @@ import javafx.stage.Stage;
 import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class GameSchermController implements Controller {
     private final EntityManager entityManager;
@@ -35,9 +34,14 @@ public class GameSchermController implements Controller {
     private Button btnInstances;
     @FXML
     private TableView tblConfigs;
-
+    @FXML
+    private Button btnGenres;
+    @FXML
+    private Button btnConsoles;
     private enum State{
         GAMES,
+        GENRES,
+        CONSOLES,
         GAMEINSTANCES
     }
     private State state;
@@ -53,9 +57,11 @@ public class GameSchermController implements Controller {
         showGames();
         btnAdd.setOnAction(e -> add());
         btnClose.setOnAction(e ->{
-            if(state == State.GAMEINSTANCES){
+            if(state != State.GAMES){
                 showGames();
                 state = State.GAMES;
+                btnEdit.setVisible(true);
+                selectedGame = null;
             }
             else{
                 var stage = (Stage) btnClose.getScene().getWindow();
@@ -65,14 +71,38 @@ public class GameSchermController implements Controller {
         btnEdit.setOnAction(e -> edit());
         btnInstances.setOnAction(e -> {
             showGameInstances();
+            btnGenres.setVisible(false);
+            btnInstances.setVisible(false);
+            btnConsoles.setVisible(false);
             this.state = State.GAMEINSTANCES;
         });
+        btnGenres.setOnAction(e ->{
+            showGenres();
+            btnEdit.setVisible(false);
+            btnGenres.setVisible(false);
+            btnInstances.setVisible(false);
+            btnConsoles.setVisible(false);
+            btnEdit.setVisible(false);
+        });
+        btnConsoles.setOnAction(e -> {
+            showConsoles();
+            btnGenres.setVisible(false);
+            btnInstances.setVisible(false);
+            btnConsoles.setVisible(false);
+            btnEdit.setVisible(false);
+        });
         btnInstances.setVisible(false);
+        btnGenres.setVisible(false);
+        btnConsoles.setVisible(false);
+        btnEdit.setVisible(false);
         tblConfigs.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         tblConfigs.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null && state == State.GAMES) {
                 selectedGame = (Game) tblConfigs.getSelectionModel().getSelectedItem();
+                btnEdit.setVisible(true);
                 btnInstances.setVisible(true);
+                btnGenres.setVisible(true);
+                btnConsoles.setVisible(true);
             }
         });
     }
@@ -84,13 +114,15 @@ public class GameSchermController implements Controller {
         TableColumn<GameInstance, String> gameNameColumn = new TableColumn<>("Game name");
         TableColumn<GameInstance, String> gameInstanceColumn = new TableColumn<>("GameInstanceID");
         TableColumn<GameInstance, String> museumColumn = new TableColumn<>("Museum address");
+        TableColumn<GameInstance, String> consoleColumn = new TableColumn<>("console");
 
+        consoleColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getConsole().getName())));
         gameNameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGame().getName())));
         gameInstanceColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGameInstanceID())));
         museumColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getMuseum().getAddress())));
 
 
-        tblConfigs.getColumns().addAll(gameNameColumn,gameInstanceColumn,museumColumn);
+        tblConfigs.getColumns().addAll(gameNameColumn,gameInstanceColumn,museumColumn,consoleColumn);
         List<GameInstance> gameInstances = gameRepo.getAllGameInstances(selectedGame);
         tblConfigs.getItems().clear();
         for (GameInstance instance : gameInstances) {
@@ -106,8 +138,9 @@ public class GameSchermController implements Controller {
             addCustomDialogController controller = null;
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
             var museumRepo = new MuseumRepositoryJpaImpl(entityManager);
+            var cgRepo = new ConsoleGenreRepositoryJpaImpl(entityManager);
             if (state == State.GAMEINSTANCES) {
-                controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumAdresses()});
+                controller = new addCustomDialogController(true,new String[]{"museum","console"},new String[][]{museumRepo.getAllMuseumAdresses(),cgRepo.getAllConsoleNames()});
             } else {
                 controller = new addCustomDialogController(new String[]{"value"},new String[]{String.valueOf(selectedGame.getValue())});
             }
@@ -139,6 +172,7 @@ public class GameSchermController implements Controller {
                             }
                             var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
                             gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]),selectedGInstance);
+                            gameRepo.changeGameInstanceConsole(selectedGInstance,cgRepo.getConsole(s[1]));
                         } catch(NumberFormatException e) {
                             showAlert();
                             edit();
@@ -160,10 +194,13 @@ public class GameSchermController implements Controller {
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
             var museumRepo = new MuseumRepositoryJpaImpl(entityManager);
             if (state == State.GAMEINSTANCES) {
-                controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumAdresses()});
-            } else {
-                controller = new addCustomDialogController(true, new String[]{"console","genre","name", "year", "value"}
-                                                            ,new String[][]{cgRepo.getAllConsoleNames(),cgRepo.getAllGenreNames()});
+                controller = new addCustomDialogController(true,new String[]{"museum","console"},new String[][]{museumRepo.getAllMuseumAdresses(),cgRepo.getAllConsoleNames()});
+            } else  if(state== State.GAMES){
+                controller = new addCustomDialogController(new String[]{"name", "year", "value"});
+            } else if(state == State.GENRES){
+                controller = new addCustomDialogController(true, new String[]{"description"},new String[][]{cgRepo.getAllGenreNames()});
+            } else{
+                controller = new addCustomDialogController(true,new String[]{"controller"},new String[][]{cgRepo.getAllConsoleNames()});
             }
             fxmlLoader.setController(controller);
             DialogPane pane = fxmlLoader.load();
@@ -174,32 +211,31 @@ public class GameSchermController implements Controller {
             if (result.isPresent()) {
                 if (result.get() == ButtonType.APPLY) {
                     String[] s = controller.getInput();
-
-                    if (state == State.GAMES){
-                        try{
-                            if(s[0] == ""){
-                                throw new NumberFormatException();
-                            }
-                            Game game = new Game(s[2],cgRepo.getConsole(s[0]),cgRepo.getGenre(s[1]),Integer.parseInt(s[3]),Float.parseFloat(s[4]));
+                    try{
+                        if(s[0] == ""){
+                            throw new NumberFormatException();
+                        }
+                        if (state == State.GAMES){
+                            Game game = new Game(s[0],new ArrayList<Console>(),new ArrayList<Genre>(),Integer.parseInt(s[1]),Float.parseFloat(s[2]));
                             gameRepo.addGame(game);
-                        } catch(NumberFormatException e) {
-                            showAlert();
-                            add();
+                            showGames();
                         }
-                        showGames();
-                    }
-                    else{
-                        try{
-                            if(s[0] == ""){
-                                throw new NumberFormatException();
-                            }
-                            GameInstance gInstance = new GameInstance(selectedGame,museumRepo.getMuseumByAddress(s[0]));
+                        else if(state == state.GAMEINSTANCES){
+                            GameInstance gInstance = new GameInstance(selectedGame,museumRepo.getMuseumByAddress(s[0]),cgRepo.getConsole(s[1]));
                             gameRepo.addGameInstance(gInstance);
-                        } catch(NumberFormatException e) {
-                            showAlert();
-                            add();
+                            showGameInstances();
                         }
-                        showGameInstances();
+                        else if(state == state.GENRES){
+                            gameRepo.addGenreToGame(selectedGame,cgRepo.getGenre(s[0]));
+                            showGenres();
+                        }
+                        else if(state == State.CONSOLES){
+                            gameRepo.addConsoleToGame(selectedGame,cgRepo.getConsole(s[0]));
+                            showConsoles();
+                        }
+                    } catch(NumberFormatException e) {
+                        showAlert();
+                        add();
                     }
                 }
             }
@@ -208,7 +244,38 @@ public class GameSchermController implements Controller {
         }
     }
 
+    private void showGenres(){
+        state = State.GENRES;
+        tblConfigs.getColumns().clear();
+        tblConfigs.getItems().clear();
+        TableColumn<Genre, String> genreIDColumn = new TableColumn<>("genreId");
+        TableColumn<Genre, String> descriptionColumn = new TableColumn<>("description");
+        genreIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGenreID())));
+        descriptionColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDescription()));
+        tblConfigs.getColumns().addAll(descriptionColumn,genreIDColumn);
+        List<Genre> genres = gameRepo.getGameGenres(selectedGame);
+        for (Genre genre : genres) {
+            tblConfigs.getItems().add(genre);
+        }
+    }
 
+    private void showConsoles(){
+        state = State.CONSOLES;
+        tblConfigs.getColumns().clear();
+        tblConfigs.getItems().clear();
+        TableColumn<Console, String> consoleIdColumn = new TableColumn<>("consoleId");
+        TableColumn<Console, String> nameColumn = new TableColumn<>("name");
+        TableColumn<Console, String> yearColumn = new TableColumn<>("year");
+
+        consoleIdColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getConsoleID())));
+        nameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getName()));
+        yearColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getYear())));
+        tblConfigs.getColumns().addAll(consoleIdColumn,nameColumn,yearColumn);
+        List<Console> consoles = gameRepo.getGameConsoles(selectedGame);
+        for (Console console : consoles) {
+            tblConfigs.getItems().add(console);
+        }
+    }
     private void showGames() {
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
@@ -222,12 +289,12 @@ public class GameSchermController implements Controller {
 
         gameIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGameID())));
         nameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getName()));
-        consoleColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getConsole().getConsoleID())));
-        genreColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGenre().getGenreID())));
+        //consoleColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getConsole().getConsoleID())));
+        //genreColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGenres().getGenreID())));
         yearColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getYear())));
         valueColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(Float.toString(cellData.getValue().getValue())));
 
-        tblConfigs.getColumns().addAll(gameIDColumn,nameColumn,consoleColumn,genreColumn,yearColumn,valueColumn);
+        tblConfigs.getColumns().addAll(gameIDColumn,nameColumn,yearColumn,valueColumn);
         List<Game> games = gameRepo.getAllGames();
         tblConfigs.getItems().clear();
         for (Game game : games) {
@@ -240,9 +307,7 @@ public class GameSchermController implements Controller {
         alert.setTitle("Error");
         alert.setHeaderText(null);
         if(state == State.GAMES){
-
             alert.setContentText("Please enter something for name and a number for year/value");
-
         }
         else{
             alert.setContentText("Please select a museum");
