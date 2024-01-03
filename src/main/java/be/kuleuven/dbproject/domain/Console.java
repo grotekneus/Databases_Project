@@ -14,6 +14,8 @@ public class Console {
     @Column
     private int year;
 
+    public Console(){}
+
     public Console(String name, int year) {
         this.name = name;
         this.year = year;

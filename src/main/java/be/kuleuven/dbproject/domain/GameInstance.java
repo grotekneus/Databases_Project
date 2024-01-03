@@ -13,6 +13,8 @@ public class GameInstance {
     @JoinColumn
     private Museum museum;
 
+    public GameInstance(){}
+
     public GameInstance(Game game, Museum museum) {
         this.game = game;
         this.museum = museum;

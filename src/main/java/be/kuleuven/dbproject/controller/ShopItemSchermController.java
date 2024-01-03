@@ -180,28 +180,6 @@ public class ShopItemSchermController implements Controller {
                     showShopItems();
                 }
             }
-            /*if(result.isPresent()){
-                if(result.get() == ButtonType.APPLY){
-                    String[] s = controller.getInput();
-                    switch(state){
-                        case ShopItems:
-                            float price;
-                            try {
-                                price = Float.parseFloat(s[3]);
-                            } catch (NumberFormatException e) {
-                                throwError("Please enter a number in price");
-                                return;
-                            }
-                            ItemType itemType = ItemType.valueOf(s[1]);
-                            ShopItem shopItem = new ShopItem(s[2],price,museumRepo.getMuseumByAddress(s[0]),itemType);
-                            shopItemRepo.addShopItem(shopItem);
-                            showShopItems();
-                            break;
-                    }
-                }
-            }
-
-             */
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -249,9 +227,7 @@ public class ShopItemSchermController implements Controller {
                         throwError("Please enter a number in price");
                         return;
                     }
-
                     // Check if a museum is selected
-
                     if (s[0] == null || s[0].isEmpty()) {
                         throwError("Please select a museum");
                         return;
@@ -260,39 +236,10 @@ public class ShopItemSchermController implements Controller {
                     selectedShopItem.setPrice(price);
                     selectedShopItem.setMuseum(museum);
                     shopItemRepo.updateShopItem(selectedShopItem);
-
-                    //ItemType itemType = ItemType.valueOf(s[1]);
-                    //ShopItem shopItem = new ShopItem(s[2], price, museumRepo.getMuseumByAddress(s[0]), itemType);
-                    //shopItemRepo.addShopItem(shopItem);
                     showShopItems();
                 }
             }
-            /*if(result.isPresent()){
-                if (result.get() == ButtonType.APPLY) {
-                    String[] s = controller.getInput();
-                    if (state == State.ShopItems){
-                        try{
-                            Museum museum = museumRepo.getMuseumByAddress(s[0]);
-                            float price;
-                            try {
-                                price = Float.parseFloat(s[1]);
-                            } catch (NumberFormatException e) {
-                                throwError("Please enter a number in price");
-                                return;
-                            }
-                            selectedShopItem.setPrice(price);
-                            selectedShopItem.setMuseum(museum);
-                            shopItemRepo.updateShopItem(selectedShopItem);
-                        } catch(NumberFormatException e) {
-                            showAlert();
-                            add();
-                        }
-                        showShopItems();
-                    }
-                }
-            }
 
-             */
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

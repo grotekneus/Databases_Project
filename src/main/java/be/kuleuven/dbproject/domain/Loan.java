@@ -18,6 +18,8 @@ public class Loan {
     @Column
     private LocalDate returned;
 
+    public Loan(){}
+
     public Loan(Customer customer, LocalDate date, LocalDate returned, Game game) {
         this.customer = customer;
         this.date = date;

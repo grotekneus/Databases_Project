@@ -39,6 +39,8 @@ public class Game {
         this.value = value;
     }
 
+    public Game(){}
+
     public String getName() {
         return name;
     }
@@ -75,3 +77,4 @@ public class Game {
         this.value = value;
     }
 }
+

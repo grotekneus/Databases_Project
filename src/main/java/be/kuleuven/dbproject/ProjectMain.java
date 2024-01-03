@@ -48,7 +48,7 @@ public class ProjectMain extends Application {
     public static void main(String[] args) {
         String dbFilePath = "VGHF.db";
 
-        // Delete the previous database file if it exists
+        /*// Delete the previous database file if it exists
         File dbFile = new File(dbFilePath);
         if (dbFile.exists()) {
             if (dbFile.delete()) {
@@ -57,6 +57,7 @@ public class ProjectMain extends Application {
                 System.err.println("Failed to delete the previous database file.");
             }
         }
+         */
         System.out.println("Bootstrapping JPA/Hibernate...");
         var sessionFactory = Persistence.createEntityManagerFactory("be.kuleuven.dbproject.domain");
         entityManager = sessionFactory.createEntityManager();

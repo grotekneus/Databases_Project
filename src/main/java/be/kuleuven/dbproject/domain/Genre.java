@@ -13,6 +13,7 @@ public class Genre {
     private int GenreID;
     @Column
     private String description;
+    public Genre(){}
 
     public Genre(String description) {
         this.description = description;
