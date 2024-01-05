@@ -73,6 +73,8 @@ public class MuseumSchermController implements Controller {
         btnClose.setOnAction(e ->{
             if(state != State.Museums){
                 state = state.Museums;
+                btnAdd.setVisible(true);
+                btnSearchMuseum.setVisible(true);
                 showMuseums();
             }
             else{
@@ -131,6 +133,8 @@ public class MuseumSchermController implements Controller {
         state=State.Games;
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
+        btnAdd.setVisible(false);
+        btnSearchMuseum.setVisible(false);
 
         TableColumn<GameInstance, String> gameNameColumn = new TableColumn<>("Game name");
         TableColumn<GameInstance, String> gameInstanceColumn = new TableColumn<>("GameInstanceID");

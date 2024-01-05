@@ -4,6 +4,7 @@ import be.kuleuven.dbproject.domain.*;
 import be.kuleuven.dbproject.repositories.CustomerRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.DonationRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
+import be.kuleuven.dbproject.repositories.ShopItemRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,11 +49,13 @@ public class CustomerSchermController implements Controller {
     private State state = State.Customers;
     private CustomerRepositoryJpaImpl customerRepo;
     private DonationRepositoryJpaImpl donationRepo;
+    private ShopItemRepositoryJpaImpl shopItemRepo;
 
     public CustomerSchermController(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.customerRepo = new CustomerRepositoryJpaImpl(entityManager);
         this.donationRepo = new DonationRepositoryJpaImpl(entityManager);
+        this.shopItemRepo = new ShopItemRepositoryJpaImpl(entityManager);
 
     }
 
@@ -161,6 +164,7 @@ public class CustomerSchermController implements Controller {
             btnShowPurchases.setVisible(false);
             btnShowLoans.setVisible(false);
             btnShowDonations.setVisible(false);
+            btnEdit.setVisible(false);
             tblConfigs.getColumns().clear();
             tblConfigs.getItems().clear();
             TableColumn<Donation, String> dateColumn = new TableColumn<>("date");
@@ -237,6 +241,20 @@ public class CustomerSchermController implements Controller {
                             break;
                         case Purchases:
                             ItemType itemType = ItemType.valueOf(s[0]);
+
+                            try {
+                                int itemId = Integer.parseInt(s[1]); // Assuming s[3] is the shop item ID
+                                if (shopItemRepo.getShopItemById(itemId)==null) {
+                                    showAlert();
+                                    return;
+                                }
+                            } catch (NumberFormatException e) {
+                                showAlert();
+                                return;
+                            }
+
+
+
                             Purchase purchase = new Purchase(selectedCustomer, itemType, Integer.parseInt(s[1]));
                             customerRepo.addPurchase(purchase);
                             showPurchases();
