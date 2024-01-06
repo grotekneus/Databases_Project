@@ -30,6 +30,19 @@ public class GameRepositoryJpaImpl {
         return entityManager.createQuery(query).getResultList();
     }
 
+    public List<GameInstance> getGameInstancesByGameAndMuseum(Game game, Museum museum) {
+        var criteriaBuilder = entityManager.getCriteriaBuilder();
+        var query = criteriaBuilder.createQuery(GameInstance.class);
+        var root = query.from(GameInstance.class); //blijkbaar selecteerd hij default de hele klasse
+
+        query.where(
+                criteriaBuilder.equal(root.get("game"), game),
+                criteriaBuilder.equal(root.get("museum"), museum)
+        );
+
+        return entityManager.createQuery(query).getResultList();
+    }
+
     public List<GameInstance> getAllGameInstancesBasedOnMuseum(Museum museum) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(GameInstance.class);

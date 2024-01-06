@@ -4,10 +4,7 @@ package be.kuleuven.dbproject.controller;
 
 
 
-import be.kuleuven.dbproject.domain.Customer;
-import be.kuleuven.dbproject.domain.Game;
-import be.kuleuven.dbproject.domain.GameInstance;
-import be.kuleuven.dbproject.domain.Museum;
+import be.kuleuven.dbproject.domain.*;
 import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.MuseumRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -19,6 +16,7 @@ import javafx.stage.Stage;
 import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -130,6 +128,38 @@ public class MuseumSchermController implements Controller {
     }
 
     private void searchGames(){
+        if(state==State.Games){
+            try {
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("Search Game");
+                dialog.setHeaderText(null);
+                dialog.setContentText("Enter game name");
+
+                Optional<String> result = dialog.showAndWait();
+
+                result.ifPresent(name -> {
+                    Game game;
+                    if (name == null || name.trim().isEmpty()) {
+                        throwError("Please enter a name");
+                        return;
+                    }
+
+                    try{
+                        game=gameRepo.findGameByName(name);
+                        List<GameInstance> matchingGames = gameRepo.getGameInstancesByGameAndMuseum(game,selectedMuseum);
+                        tblConfigs.getItems().clear();
+                        tblConfigs.getItems().addAll(matchingGames);
+                    } catch (NoResultException e) {
+                        throwError("Game not found");
+                    }
+                });
+            } catch (Exception e) {
+                // Handle exceptions as needed
+                e.printStackTrace();
+            }
+            return;
+        }
+
         state=State.Games;
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
