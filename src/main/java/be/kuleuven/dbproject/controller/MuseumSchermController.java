@@ -200,10 +200,6 @@ public class MuseumSchermController implements Controller {
                 case Museums:
                     this.selectedMuseum = (Museum) tblConfigs.getSelectionModel().getSelectedItem();
                     if (selectedMuseum == null) {
-                        // No museum selected, show an error or return
-                        // You may want to display an error message or handle this case as appropriate
-
-                        // Example: Display an error message using an Alert
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText(null);
@@ -216,12 +212,11 @@ public class MuseumSchermController implements Controller {
                     controller = new addCustomDialogController(new String[]{"revenue","visitors"},
                             new String[]{String.valueOf(selectedMuseum.getRevenue()),String.valueOf(selectedMuseum.getVisitors()),selectedMuseum.getAddress()});
                     break;
-                /*case Games:
-                    controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"},
-                            new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
+                case Games:
+                    controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumAdresses()});
                     break;
 
-                 */
+
             }
             fxmlLoader.setController(controller);
             DialogPane pane = fxmlLoader.load();
@@ -246,8 +241,23 @@ public class MuseumSchermController implements Controller {
                         }
                         showMuseums();
                     }
+                    else{
+                        try{
+                            if(s[0] == ""){
+                                throw new NumberFormatException();
+                            }
+                            var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
+                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]),selectedGInstance);
+                        } catch(NumberFormatException e) {
+                            showAlert();
+                            edit();
+                        }
+                        state=State.Museums;
+                        searchGames();
+                    }
                 }
             }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
