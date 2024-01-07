@@ -166,4 +166,16 @@ public class GameRepositoryJpaImpl {
             entityManager.getTransaction().commit();
         }
     }
+
+    public void deleteConsoleFromGame(Game selectedGame, Console console) {
+        entityManager.getTransaction().begin();
+        selectedGame.deleteConsole(console);
+        entityManager.getTransaction().commit();
+    }
+
+    public void deleteGenreFromGame(Game selectedGame, Genre genre) {
+        entityManager.getTransaction().begin();
+        selectedGame.deleteGenre(genre);
+        entityManager.getTransaction().commit();
+    }
 }

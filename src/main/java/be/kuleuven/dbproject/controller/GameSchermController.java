@@ -28,6 +28,8 @@ public class GameSchermController implements Controller {
     @FXML
     private Text title;
     @FXML
+    private Button btnDelete;
+    @FXML
     private Button btnAdd;
     @FXML
     private Button btnClose;
@@ -63,6 +65,7 @@ public class GameSchermController implements Controller {
             if(state != State.GAMES){
                 showGames();
                 state = State.GAMES;
+                btnDelete.setVisible(false);
                 btnEdit.setVisible(true);
                 selectedGame = null;
             }
@@ -81,6 +84,7 @@ public class GameSchermController implements Controller {
         });
         btnGenres.setOnAction(e ->{
             showGenres();
+            btnDelete.setVisible(true);
             btnEdit.setVisible(false);
             btnGenres.setVisible(false);
             btnInstances.setVisible(false);
@@ -89,11 +93,16 @@ public class GameSchermController implements Controller {
         });
         btnConsoles.setOnAction(e -> {
             showConsoles();
+            btnDelete.setVisible(true);
             btnGenres.setVisible(false);
             btnInstances.setVisible(false);
             btnConsoles.setVisible(false);
             btnEdit.setVisible(false);
         });
+        btnDelete.setOnAction(e -> {
+            delete();
+        });
+        btnDelete.setVisible(false);
         btnInstances.setVisible(false);
         btnGenres.setVisible(false);
         btnConsoles.setVisible(false);
@@ -108,6 +117,23 @@ public class GameSchermController implements Controller {
                 btnConsoles.setVisible(true);
             }
         });
+    }
+
+    private void delete() {
+        if(selectedGame == null || tblConfigs.getSelectionModel().getSelectedItem() == null){
+            showAlert();
+        }
+        GameRepositoryJpaImpl gameRepo = new GameRepositoryJpaImpl(entityManager);
+        if(state == State.CONSOLES){
+            Console console  = (Console) tblConfigs.getSelectionModel().getSelectedItem();
+            gameRepo.deleteConsoleFromGame(selectedGame,console);
+            showConsoles();
+        }
+        else if(state == State.GENRES){
+            Genre genre = (Genre) tblConfigs.getSelectionModel().getSelectedItem();
+            gameRepo.deleteGenreFromGame(selectedGame,genre);
+            showGenres();
+        }
     }
 
     private void showGameInstances() {
@@ -137,7 +163,9 @@ public class GameSchermController implements Controller {
 
     private void edit() {
         try {
-
+            if(tblConfigs.getSelectionModel().getSelectedItem() == null){
+                return;
+            }
             FXMLLoader fxmlLoader = new FXMLLoader();
             addCustomDialogController controller = null;
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
@@ -157,27 +185,26 @@ public class GameSchermController implements Controller {
             if (result.isPresent()) {
                 if (result.get() == ButtonType.APPLY) {
                     String[] s = controller.getInput();
-                    if (state == State.GAMES){
-                        try{
-                            if(s[0] == ""){
+                    if (state == State.GAMES) {
+                        try {
+                            if (s[0] == "") {
                                 throw new NumberFormatException();
                             }
-                            gameRepo.changeGameValue(Integer.parseInt(s[0]),selectedGame);
-                        } catch(NumberFormatException e) {
+                            gameRepo.changeGameValue(Integer.parseInt(s[0]), selectedGame);
+                        } catch (NumberFormatException e) {
                             showAlert();
                             edit();
                         }
                         showGames();
-                    }
-                    else{
-                        try{
-                            if(s[0] == ""){
+                    } else {
+                        try {
+                            if (s[0] == "") {
                                 throw new NumberFormatException();
                             }
                             var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
-                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]),selectedGInstance);
-                            gameRepo.changeGameInstanceConsole(selectedGInstance,cgRepo.getConsole(s[1]));
-                        } catch(NumberFormatException e) {
+                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]), selectedGInstance);
+                            gameRepo.changeGameInstanceConsole(selectedGInstance, cgRepo.getConsole(s[1]));
+                        } catch (NumberFormatException e) {
                             showAlert();
                             edit();
                         }
@@ -317,7 +344,7 @@ public class GameSchermController implements Controller {
             alert.setContentText("Please enter something for name and a number for year/value");
         }
         else{
-            alert.setContentText("Please select a museum");
+            alert.setContentText("Please enter everything");
         }
         alert.showAndWait();
     }

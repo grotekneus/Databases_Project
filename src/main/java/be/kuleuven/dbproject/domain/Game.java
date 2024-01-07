@@ -89,5 +89,13 @@ public class Game {
     public void setValue(float value) {
         this.value = value;
     }
+
+    public void deleteConsole(Console console) {
+        consoles.remove(console);
+    }
+
+    public void deleteGenre(Genre genre) {
+        genres.remove(genre);
+    }
 }
 

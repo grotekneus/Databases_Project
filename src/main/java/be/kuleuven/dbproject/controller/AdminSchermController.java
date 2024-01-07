@@ -84,6 +84,9 @@ public class AdminSchermController implements Controller {
 
     private void edit() {
         try{
+            if(tblConfigs.getSelectionModel().getSelectedItem() == null){
+                return;
+            }
             FXMLLoader fxmlLoader = new FXMLLoader();
             addCustomDialogController controller = null;
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
