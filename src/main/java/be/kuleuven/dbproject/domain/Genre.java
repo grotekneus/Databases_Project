@@ -13,13 +13,11 @@ public class Genre {
     private int genreId;
     @Column
     private String description;
-    public Genre(){}
+
 
     @ManyToMany(mappedBy = "genres")
     private List<Game> games;
-    public Genre(){
-
-    }
+    public Genre(){}
     public Genre(String description) {
         this.description = description;
         this.games = new ArrayList<Game>();

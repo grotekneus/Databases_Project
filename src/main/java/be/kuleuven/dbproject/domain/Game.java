@@ -38,9 +38,6 @@ public class Game {
         this.value = value;
     }
 
-    public Game(){
-
-    }
     public Game(String name, List<Console> consoles, List<Genre> genres, int year, float value) {
         this.name = name;
         this.consoles = consoles;
