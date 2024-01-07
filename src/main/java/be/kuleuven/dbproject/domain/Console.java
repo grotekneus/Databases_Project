@@ -18,6 +18,9 @@ public class Console {
     @ManyToMany
     private List<Game> games;
 
+    public Console(){
+
+    }
     public Console(String name, int year, List<Game> games) {
         this.name = name;
         this.year = year;

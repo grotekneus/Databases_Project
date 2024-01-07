@@ -1,6 +1,7 @@
 package be.kuleuven.dbproject.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,8 +16,12 @@ public class Genre {
 
     @ManyToMany(mappedBy = "genres")
     private List<Game> games;
+    public Genre(){
+
+    }
     public Genre(String description) {
         this.description = description;
+        this.games = new ArrayList<Game>();
     }
 
     public String getDescription() {

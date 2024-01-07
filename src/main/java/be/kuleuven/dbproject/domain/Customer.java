@@ -18,6 +18,9 @@ public class Customer {
     @Column
     private String email;
 
+    public Customer(){
+
+    }
     public Customer(String fullName, String address, String email) {
         this.fullName = fullName;
         this.address = address;

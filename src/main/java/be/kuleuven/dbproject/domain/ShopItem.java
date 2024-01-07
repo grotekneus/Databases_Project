@@ -19,6 +19,9 @@ public class ShopItem {
 
     private Museum museum;
 
+    public ShopItem(){
+
+    }
     public ShopItem(String name, float price, Museum museum, ItemType itemType) {
         this.name = name;
         this.price = price;

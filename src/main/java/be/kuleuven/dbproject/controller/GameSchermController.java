@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -24,6 +25,8 @@ import java.util.*;
 public class GameSchermController implements Controller {
     private final EntityManager entityManager;
     private final GameRepositoryJpaImpl gameRepo;
+    @FXML
+    private Text title;
     @FXML
     private Button btnAdd;
     @FXML
@@ -108,6 +111,7 @@ public class GameSchermController implements Controller {
     }
 
     private void showGameInstances() {
+        title.setText("Manage GameInstances");
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
 
@@ -245,6 +249,7 @@ public class GameSchermController implements Controller {
     }
 
     private void showGenres(){
+        title.setText("Manage Genres");
         state = State.GENRES;
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
@@ -260,6 +265,7 @@ public class GameSchermController implements Controller {
     }
 
     private void showConsoles(){
+        title.setText("Manage Consoles");
         state = State.CONSOLES;
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
@@ -277,6 +283,7 @@ public class GameSchermController implements Controller {
         }
     }
     private void showGames() {
+        title.setText("Manage Games");
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
 

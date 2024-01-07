@@ -24,6 +24,9 @@ public class Purchase {
         this.itemID = itemID;
     }
 
+    public Purchase(){
+
+    }
     public Purchase(Customer customer, ItemType itemType, int itemID) {
         this.customer = customer;
         this.itemType = itemType;

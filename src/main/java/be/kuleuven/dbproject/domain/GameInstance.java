@@ -22,9 +22,12 @@ public class GameInstance {
     @JoinColumn
     private Console console;
 
+    public GameInstance(){
+    }
     public GameInstance(Game game, Museum museum,Console console) {
         this.game = game;
         this.museum = museum;
+        this.console = console;
     }
 
     public Console getConsole() {
