@@ -101,6 +101,5 @@ public class ProjectMainController {
 
     private void showVoegToeDialog(){
         Dialog<Loan> dialog = new Dialog<>();
-
     }
 }

@@ -12,7 +12,7 @@
                 <TableColumn prefWidth="75.0" text="C2" />
             </columns>
         </TableView>
-        <Text layoutX="16.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage games" wrappingWidth="567.21875">
+        <Text fx:id="title" layoutX="16.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage games" wrappingWidth="567.21875">
             <font>
                 <Font name="System Bold Italic" size="13.0" />
             </font>
@@ -21,5 +21,7 @@
         <Button fx:id="btnInstances" layoutX="14.0" layoutY="119.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="102.0" text="Game Instanties" />
         <Button fx:id="btnClose" layoutX="14.0" layoutY="350.0" mnemonicParsing="false" text="Close" />
         <Button fx:id="btnEdit" layoutX="14.0" layoutY="86.0" mnemonicParsing="false" text="Edit" />
+        <Button fx:id="btnGenres" layoutX="16.0" layoutY="153.0" mnemonicParsing="false" text="View Genres" />
+        <Button fx:id="btnConsoles" layoutX="16.0" layoutY="188.0" mnemonicParsing="false" text="View Consoles" />
     </children>
 </AnchorPane>

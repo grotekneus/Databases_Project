@@ -15,6 +15,7 @@ import org.hibernate.annotations.Tables;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,7 +155,7 @@ public class AdminSchermController implements Controller {
                         }
                     }
                     if(state == Tables.Console) {
-                        Console c = new Console(s[0],Integer.parseInt(s[1]));
+                        Console c = new Console(s[0],Integer.parseInt(s[1]), new ArrayList<Game>());
                         cgRepo.addConsole(c);
                         showConsoles();
                     }

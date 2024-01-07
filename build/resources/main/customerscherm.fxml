@@ -27,5 +27,7 @@
         <Button fx:id="btnShowDonations" layoutX="200.0" layoutY="304.0" mnemonicParsing="false" text="View Donations" />
         <Button fx:id="btnShowPurchases" layoutX="100.0" layoutY="304.0" mnemonicParsing="false" text="View Purchases" />
         <Button fx:id="btnClose" layoutX="520.0" layoutY="304.0" mnemonicParsing="false" text="Close" />
+        <Button fx:id="btnDelete" layoutX="470.0" layoutY="304.0" mnemonicParsing="false" text="delete" />
+        <Button fx:id="btnSearch" layoutX="380.0" layoutY="304.0" mnemonicParsing="false" text="search name" />
     </children>
 </AnchorPane>

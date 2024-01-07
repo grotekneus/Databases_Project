@@ -20,6 +20,8 @@ public class Museum {
     @Column
     private String country;
 
+    public Museum(){}
+
     public Museum(String address, int visitors, float revenue, String country) {
         this.address = address;
         this.visitors = visitors;

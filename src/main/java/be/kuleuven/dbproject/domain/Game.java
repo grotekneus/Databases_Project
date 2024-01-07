@@ -2,23 +2,30 @@ package be.kuleuven.dbproject.domain;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Game {
     @Column
     private String name;
 
-    @ManyToOne
-    @JoinColumn
-    private Console console;
+    @ManyToMany
+    @JoinTable(
+            name="games_consoles",
+            joinColumns=@JoinColumn(name="gameId"),
+            inverseJoinColumns=@JoinColumn(name="consoleId"))
+    private List<Console> consoles;
 
-    @ManyToOne
-    @JoinColumn
-
-    private Genre genre;
+    @ManyToMany
+    @JoinTable(
+            name="games_genres",
+            joinColumns=@JoinColumn(name="gameId"),
+            inverseJoinColumns=@JoinColumn(name="genreId"))
+    private List<Genre> genres;
     @Column
     private int year;
-    @Column
+    @Column(name="gameID")
     @Id
     @GeneratedValue
     private int gameID;
@@ -31,13 +38,15 @@ public class Game {
         this.value = value;
     }
 
-    public Game(String name, Console console, Genre genre, int year, float value) {
+    public Game(String name, List<Console> consoles, List<Genre> genres, int year, float value) {
         this.name = name;
-        this.console = console;
-        this.genre = genre;
+        this.consoles = consoles;
+        this.genres = genres;
         this.year = year;
         this.value = value;
     }
+
+    public Game(){}
 
     public String getName() {
         return name;
@@ -50,13 +59,15 @@ public class Game {
     public int getYear() {
         return year;
     }
-
-    public Console getConsole() {
-        return console;
+    public void addConsole(Console c){
+        this.consoles.add(c);
+    }
+    public List<Console> getConsoles() {
+        return consoles;
     }
 
-    public Genre getGenre() {
-        return genre;
+    public List<Genre> getGenres() {
+        return genres;
     }
 
     public int getGameID() {
@@ -71,7 +82,12 @@ public class Game {
         return value;
     }
 
+    public void addGenre(Genre genre){
+        this.genres.add(genre);
+    }
+
     public void setValue(float value) {
         this.value = value;
     }
 }
+

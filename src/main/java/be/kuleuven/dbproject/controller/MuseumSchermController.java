@@ -4,10 +4,7 @@ package be.kuleuven.dbproject.controller;
 
 
 
-import be.kuleuven.dbproject.domain.Customer;
-import be.kuleuven.dbproject.domain.Game;
-import be.kuleuven.dbproject.domain.GameInstance;
-import be.kuleuven.dbproject.domain.Museum;
+import be.kuleuven.dbproject.domain.*;
 import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.MuseumRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -19,6 +16,7 @@ import javafx.stage.Stage;
 import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -73,6 +71,8 @@ public class MuseumSchermController implements Controller {
         btnClose.setOnAction(e ->{
             if(state != State.Museums){
                 state = state.Museums;
+                btnAdd.setVisible(true);
+                btnSearchMuseum.setVisible(true);
                 showMuseums();
             }
             else{
@@ -128,9 +128,43 @@ public class MuseumSchermController implements Controller {
     }
 
     private void searchGames(){
+        if(state==State.Games){
+            try {
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("Search Game");
+                dialog.setHeaderText(null);
+                dialog.setContentText("Enter game name");
+
+                Optional<String> result = dialog.showAndWait();
+
+                result.ifPresent(name -> {
+                    Game game;
+                    if (name == null || name.trim().isEmpty()) {
+                        throwError("Please enter a name");
+                        return;
+                    }
+
+                    try{
+                        game=gameRepo.findGameByName(name);
+                        List<GameInstance> matchingGames = gameRepo.getGameInstancesByGameAndMuseum(game,selectedMuseum);
+                        tblConfigs.getItems().clear();
+                        tblConfigs.getItems().addAll(matchingGames);
+                    } catch (NoResultException e) {
+                        throwError("Game not found");
+                    }
+                });
+            } catch (Exception e) {
+                // Handle exceptions as needed
+                e.printStackTrace();
+            }
+            return;
+        }
+
         state=State.Games;
         tblConfigs.getColumns().clear();
         tblConfigs.getItems().clear();
+        btnAdd.setVisible(false);
+        btnSearchMuseum.setVisible(false);
 
         TableColumn<GameInstance, String> gameNameColumn = new TableColumn<>("Game name");
         TableColumn<GameInstance, String> gameInstanceColumn = new TableColumn<>("GameInstanceID");
@@ -166,10 +200,6 @@ public class MuseumSchermController implements Controller {
                 case Museums:
                     this.selectedMuseum = (Museum) tblConfigs.getSelectionModel().getSelectedItem();
                     if (selectedMuseum == null) {
-                        // No museum selected, show an error or return
-                        // You may want to display an error message or handle this case as appropriate
-
-                        // Example: Display an error message using an Alert
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText(null);
@@ -182,12 +212,11 @@ public class MuseumSchermController implements Controller {
                     controller = new addCustomDialogController(new String[]{"revenue","visitors"},
                             new String[]{String.valueOf(selectedMuseum.getRevenue()),String.valueOf(selectedMuseum.getVisitors()),selectedMuseum.getAddress()});
                     break;
-                /*case Games:
-                    controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"},
-                            new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
+                case Games:
+                    controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumAdresses()});
                     break;
 
-                 */
+
             }
             fxmlLoader.setController(controller);
             DialogPane pane = fxmlLoader.load();
@@ -212,8 +241,23 @@ public class MuseumSchermController implements Controller {
                         }
                         showMuseums();
                     }
+                    else{
+                        try{
+                            if(s[0] == ""){
+                                throw new NumberFormatException();
+                            }
+                            var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
+                            gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]),selectedGInstance);
+                        } catch(NumberFormatException e) {
+                            showAlert();
+                            edit();
+                        }
+                        state=State.Museums;
+                        searchGames();
+                    }
                 }
             }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
