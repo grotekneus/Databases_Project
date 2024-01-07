@@ -52,11 +52,13 @@ public class CustomerSchermController implements Controller {
     private State state = State.Customers;
     private CustomerRepositoryJpaImpl customerRepo;
     private DonationRepositoryJpaImpl donationRepo;
+    private ShopItemRepositoryJpaImpl shopItemRepo;
 
     public CustomerSchermController(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.customerRepo = new CustomerRepositoryJpaImpl(entityManager);
         this.donationRepo = new DonationRepositoryJpaImpl(entityManager);
+        this.shopItemRepo = new ShopItemRepositoryJpaImpl(entityManager);
 
     }
 
@@ -180,6 +182,7 @@ public class CustomerSchermController implements Controller {
             btnShowPurchases.setVisible(false);
             btnShowLoans.setVisible(false);
             btnShowDonations.setVisible(false);
+            btnEdit.setVisible(false);
             tblConfigs.getColumns().clear();
             tblConfigs.getItems().clear();
             TableColumn<Donation, String> dateColumn = new TableColumn<>("date");

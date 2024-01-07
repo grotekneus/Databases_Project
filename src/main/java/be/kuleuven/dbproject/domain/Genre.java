@@ -13,6 +13,7 @@ public class Genre {
     private int genreId;
     @Column
     private String description;
+    public Genre(){}
 
     @ManyToMany(mappedBy = "genres")
     private List<Game> games;
