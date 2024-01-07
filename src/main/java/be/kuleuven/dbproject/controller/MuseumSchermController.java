@@ -340,21 +340,6 @@ public class MuseumSchermController implements Controller {
                             museumRepo.addMuseum(museum);
                             showMuseums();
                             break;
-                        /*case Loans:
-                            Loan loan = new Loan(selectedCustomer, LocalDate.now(),LocalDate.of(Integer.valueOf(s[1]),
-                                    Integer.valueOf(s[2]),
-                                    Integer.valueOf(s[3])));
-                            customerRepo.addLoan(loan);
-                            showLoans();
-                            break;
-                        case Purchases:
-
-                            break;
-                        case Donations:
-
-                            break;
-
-                         */
                     }
                 }
             }
