@@ -112,17 +112,6 @@ public class DonationSchermController implements Controller {
                 case Donations:
                     controller = new addCustomDialogController(new String[]{"amount donated","customer ID"});
                     break;
-                /*case Loans:
-                    controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"});
-                    break;
-                case Purchases:
-                    controller = new addCustomDialogController(new String[]{"item type","item id"});
-                    break;
-                case Donations:
-                    controller = new addCustomDialogController(new String[]{"Money Donated"});
-                    break;
-
-                 */
             }
             fxmlLoader.setController(controller);
             DialogPane pane = fxmlLoader.load();

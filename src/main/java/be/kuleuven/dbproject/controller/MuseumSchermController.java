@@ -51,6 +51,7 @@ public class MuseumSchermController implements Controller {
     private final GameRepositoryJpaImpl gameRepo;
 
     private Museum selectedMuseum;
+    private Game selectedGame;
     private State state = State.Museums;
     private MuseumRepositoryJpaImpl museumRepo;
     public MuseumSchermController(EntityManager entityManager) {
@@ -86,8 +87,10 @@ public class MuseumSchermController implements Controller {
             if (newSelection != null && state == State.Museums) {
                 selectedMuseum = (Museum) tblConfigs.getSelectionModel().getSelectedItem();
                 btnSearchGame.setVisible(true);
-
-                //btnShowPurchases.setVisible(true);
+            }
+            if(newSelection != null && state == State.Games) {
+                selectedGame = (Game) tblConfigs.getSelectionModel().getSelectedItem();
+                btnSearchGame.setVisible(true);
             }
         });
         tblConfigs.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -105,20 +108,20 @@ public class MuseumSchermController implements Controller {
 
             result.ifPresent(address -> {
                 // Perform the search based on the entered address
+                if(address == null || address.trim().isEmpty()) {
+                    throwError("please enter an address");
+                    return;
+                }
                 Museum matchingMuseum = museumRepo.getMuseumByAddress(address);
 
                 if (matchingMuseum==null) {
-                    // No matching museums found, display a message or handle this case
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Search Result");
-                    alert.setHeaderText(null);
-                    alert.setContentText("No museums found with the specified address.");
-                    alert.showAndWait();
-                } else {
-                    // Select the matching museum in the table
+                    throwError("museum not found");
+                }
+                else {    // Select the matching museum in the table
                     tblConfigs.getSelectionModel().clearSelection();
                     tblConfigs.getSelectionModel().select(matchingMuseum);
                 }
+
             });
         } catch (Exception e) {
             // Handle exceptions as needed
@@ -183,9 +186,7 @@ public class MuseumSchermController implements Controller {
             List<GameInstance> gameInstances = gameRepo.getAllGameInstancesBasedOnMuseum(selectedMuseum);
             tblConfigs.getItems().addAll(gameInstances);
         } else {
-            // Handle the case where selectedMuseum is null
-            System.out.println("Selected museum is null!");
-            showAlert();
+            throwError("select a museum");
         }
 
     }
@@ -200,12 +201,7 @@ public class MuseumSchermController implements Controller {
                 case Museums:
                     this.selectedMuseum = (Museum) tblConfigs.getSelectionModel().getSelectedItem();
                     if (selectedMuseum == null) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Please select a museum to edit");
-                        alert.showAndWait();
-
+                        throwError("Please select a museum to edit");
                         return;
                     }
 
@@ -213,6 +209,11 @@ public class MuseumSchermController implements Controller {
                             new String[]{String.valueOf(selectedMuseum.getRevenue()),String.valueOf(selectedMuseum.getVisitors()),selectedMuseum.getAddress()});
                     break;
                 case Games:
+                    this.selectedGame= (Game) tblConfigs.getSelectionModel().getSelectedItem();
+                    if (selectedGame == null) {
+                        throwError("Please select a game to edit");
+                        return;
+                    }
                     controller = new addCustomDialogController(true,new String[]{"museum"},new String[][]{museumRepo.getAllMuseumAdresses()});
                     break;
 
@@ -229,15 +230,18 @@ public class MuseumSchermController implements Controller {
                     String[] s = controller.getInput();
                     if (state == State.Museums){
                         try{
-                            //if(s[0] == ""){
-                              //  throw new NumberFormatException();
-                            //}
                             selectedMuseum.setRevenue(Float.parseFloat(s[0]));
-                            selectedMuseum.setVisitors(Integer.parseInt(s[1]));
+                            int visitors;
+                            visitors=Integer.parseInt(s[1]);
+                            if(visitors<0){
+                                throwError("visitors has to be 0 or larger");
+                                return;
+                            }
+                            selectedMuseum.setVisitors(visitors);
                             museumRepo.updateMuseum(selectedMuseum);
                         } catch(NumberFormatException e) {
-                            showAlert();
-                            add();
+                            throwError("please enter a number");
+                            edit();
                         }
                         showMuseums();
                     }
@@ -249,7 +253,7 @@ public class MuseumSchermController implements Controller {
                             var selectedGInstance = (GameInstance) tblConfigs.getSelectionModel().getSelectedItem();
                             gameRepo.changeGameInstanceMuseum(museumRepo.getMuseumByAddress(s[0]),selectedGInstance);
                         } catch(NumberFormatException e) {
-                            showAlert();
+                            throwError("please select a museum");
                             edit();
                         }
                         state=State.Museums;
@@ -315,9 +319,18 @@ public class MuseumSchermController implements Controller {
                                 throwError("Please enter a valid address.");
                                 return;
                             }
+                            if (!s[0].matches(".*\\d.*")) {
+                                throwError("Address must contain a number.");
+                                return;
+                            }
+
                             int visitors;
                             try {
                                 visitors = Integer.parseInt(s[1]);
+                                if(visitors<0){
+                                    throwError("visitors has to be 0 or larger");
+                                    return;
+                                }
                             } catch (NumberFormatException e) {
                                 throwError("Please enter a valid number for visitors.");
                                 return;
@@ -348,20 +361,6 @@ public class MuseumSchermController implements Controller {
         }
     }
 
-    public void showAlert(){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        if(state == State.Museums){
-
-            alert.setContentText("Please enter something for name and a number for year/value");
-
-        }
-        else{
-            alert.setContentText("Please select a museum");
-        }
-        alert.showAndWait();
-    }
 
     private void throwError(String error){
         Alert alert = new Alert(Alert.AlertType.ERROR);
