@@ -244,9 +244,15 @@ public class CustomerSchermController implements Controller {
                     }
                     switch (state) {
                         case Customers:
-                            Customer customer = new Customer(s[0], s[1], s[2]);
-                            customerRepo.addCustomer(customer);
-                            showCustomers();
+                            String email=s[2];
+                            if(email.contains("@") && email.contains(".")){
+                                Customer customer = new Customer(s[0], s[1], s[2]);
+                                customerRepo.addCustomer(customer);
+                                showCustomers();
+                            }
+                            else{
+                                throwError("email must contain @ and .");
+                            }
                             break;
                         case Loans:
                             var gameRepo = new GameRepositoryJpaImpl(entityManager);
@@ -262,21 +268,26 @@ public class CustomerSchermController implements Controller {
                             ShopItemRepositoryJpaImpl shopitems = new ShopItemRepositoryJpaImpl(entityManager);
                             ShopItem shopItem = shopitems.getShopItemById(Integer.parseInt(s[1]));
                             if(shopItem == null){
-                                showAlert();
+                                throwError("please enter an existing item ID");
+                                return;
                             }
-                            Purchase purchase = new Purchase(selectedCustomer, itemType, Integer.parseInt(s[1]));
-                            customerRepo.addPurchase(purchase);
-                            showPurchases();
+                            else {
+                                Purchase purchase = new Purchase(selectedCustomer, itemType, Integer.parseInt(s[1]));
+                                customerRepo.addPurchase(purchase);
+                                showPurchases();
+                            }
                             break;
                         case Donations:
-                            float money = Float.parseFloat(s[0]);
+                            float money;
+                            try {
+                                money = Float.parseFloat(s[0]);
+                            } catch (NumberFormatException e) {
+                                throwError("Please enter a number in money");
+                                return;
+                            }
                             LocalDate date = LocalDate.now();
                             if (selectedCustomer == null) {
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Error");
-                                alert.setHeaderText(null);
-                                alert.setContentText("Please enter existing customerID");
-                                alert.showAndWait();
+                                throwError("Please enter an existing customer ID");
                                 return;
                             } else {
                                 Donation donation = new Donation(money, date, selectedCustomer);
@@ -289,7 +300,7 @@ public class CustomerSchermController implements Controller {
 
             }
         } catch (IOException e) {
-            showAlert();
+            throwError("Please fill in all fields.");
             add();
         }
     }
@@ -326,7 +337,7 @@ public class CustomerSchermController implements Controller {
                             }
                         }
                     } catch(NumberFormatException e) {
-                        showAlert();
+                        throwError("please fill in all fields");
                         add();
                     }
 
@@ -338,15 +349,6 @@ public class CustomerSchermController implements Controller {
         }
 
     }
-
-    private void showAlert() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText("Please enter the right thing in all fields");
-        alert.showAndWait();
-    }
-
 
     private void showCustomers(){
         tblConfigs.getColumns().clear();
@@ -383,11 +385,8 @@ public class CustomerSchermController implements Controller {
                 Customer customer = customerRepo.getCustomer(name);
 
                 if (customer==null) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Search Result");
-                    alert.setHeaderText(null);
-                    alert.setContentText("No customers found with that name");
-                    alert.showAndWait();
+                    throwError("No customers found with that name");
+                    return;
                 } else {
                     tblConfigs.getSelectionModel().clearSelection();
                     tblConfigs.getSelectionModel().select(customer);
@@ -396,5 +395,13 @@ public class CustomerSchermController implements Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void throwError(String error){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(error);
+        alert.showAndWait();
     }
 }
