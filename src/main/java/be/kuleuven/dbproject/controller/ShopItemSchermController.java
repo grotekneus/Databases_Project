@@ -263,7 +263,7 @@ public class ShopItemSchermController implements Controller {
                     ShopItem matchingShopItem = shopItemRepo.getShopItemById(id);
 
                     if (matchingShopItem == null) {
-                        // No matching shop item found, display a message or handle this case
+                        // No matching shop item found
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Search Result");
                         alert.setHeaderText(null);
@@ -280,7 +280,6 @@ public class ShopItemSchermController implements Controller {
                 }
             });
         } catch (Exception e) {
-            // Handle exceptions as needed
             e.printStackTrace();
         }
     }
@@ -293,9 +292,7 @@ public class ShopItemSchermController implements Controller {
         alert.setTitle("Error");
         alert.setHeaderText(null);
         if(state == State.ShopItems){
-
             alert.setContentText("error");
-
         }
         else{
             alert.setContentText("Please select a shopitem");

@@ -32,11 +32,9 @@ public class ShopItemRepositoryJpaImpl {
         var query = criteriaBuilder.createQuery(ShopItem.class);
         var root = query.from(ShopItem.class);
         query.where(criteriaBuilder.equal(root.get("itemID"), itemId));
-
         try {
             return entityManager.createQuery(query).getSingleResult();
         } catch (javax.persistence.NoResultException e) {
-            // Handle the case where no ShopItem with the given ID is found
             return null;
         }
     }

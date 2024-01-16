@@ -17,7 +17,7 @@ public class CustomerRepositoryJpaImpl {
     public List<Customer> getAllCustomers(){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Customer.class);
-        var root = query.from(Customer.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Customer.class);
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -30,7 +30,7 @@ public class CustomerRepositoryJpaImpl {
     public List<Loan> getLoans(Customer customer) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Loan.class);
-        var root = query.from(Loan.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Loan.class);
         query.where(criteriaBuilder.equal(root.get("customer"), customer));
         return entityManager.createQuery(query).getResultList();
     }
@@ -38,7 +38,7 @@ public class CustomerRepositoryJpaImpl {
     public List<Donation> getDonations(Customer c) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Donation.class);
-        var root = query.from(Donation.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Donation.class);
         query.where(criteriaBuilder.equal(root.get("customer"), c));
         return entityManager.createQuery(query).getResultList();
     }
@@ -46,7 +46,7 @@ public class CustomerRepositoryJpaImpl {
     public List<Purchase> getPurchases(Customer c) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Purchase.class);
-        var root = query.from(Purchase.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Purchase.class);
         query.where(criteriaBuilder.equal(root.get("customer"), c));
         return entityManager.createQuery(query).getResultList();
     }
@@ -77,7 +77,7 @@ public class CustomerRepositoryJpaImpl {
     public Customer getCustomer(String name){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Customer.class);
-        var root = query.from(Customer.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Customer.class);
         query.where(criteriaBuilder.equal(root.get("name"), name));
         return entityManager.createQuery(query).getSingleResult();
     }

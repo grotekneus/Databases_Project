@@ -37,45 +37,19 @@ public class ProjectMain extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("loginscherm.fxml"));
         loader.setController(loginController);
         var root = (AnchorPane) loader.load();
-
         Scene scene = new Scene(root);
-
         stage.setTitle("DAdministratie hoofdscherm");
         stage.setScene(scene);
         stage.show();
-        /*
-        ProjectMainController mainController = new ProjectMainController(entityManager);
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("main.fxml"));
-        loader.setController(mainController);
-        var root = (AnchorPane) loader.load();
-
-        Scene scene = new Scene(root);
-
-        stage.setTitle("DAdministratie hoofdscherm");
-        stage.setScene(scene);
-        stage.show();*/
     }
 
 
     public static void main(String[] args) {
         String dbFilePath = "VGHF.db";
-
-        // Delete the previous database file if it exists
-        /*File dbFile = new File(dbFilePath);
-        if (dbFile.exists()) {
-            if (dbFile.delete()) {
-                System.out.println("Previous database file deleted successfully.");
-            } else {
-                System.err.println("Failed to delete the previous database file.");
-            }
-        }*/
         System.out.println("Bootstrapping JPA/Hibernate...");
         var sessionFactory = Persistence.createEntityManagerFactory("be.kuleuven.dbproject.domain");
         entityManager = sessionFactory.createEntityManager();
-
         System.out.println("Bootstrapping Repository...");
-
-
         entityManager.clear();
         entityManager.close();
         entityManager = sessionFactory.createEntityManager();

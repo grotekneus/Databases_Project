@@ -68,7 +68,6 @@ public class MuseumSchermController implements Controller {
         btnEdit.setOnAction(e -> {edit();});
         btnSearchGame.setVisible(false);
 
-        //btnShowPurchases.setVisible(false);
         btnClose.setOnAction(e ->{
             if(state != State.Museums){
                 state = state.Museums;
@@ -107,7 +106,6 @@ public class MuseumSchermController implements Controller {
             Optional<String> result = dialog.showAndWait();
 
             result.ifPresent(address -> {
-                // Perform the search based on the entered address
                 if(address == null || address.trim().isEmpty()) {
                     throwError("please enter an address");
                     return;
@@ -124,7 +122,6 @@ public class MuseumSchermController implements Controller {
 
             });
         } catch (Exception e) {
-            // Handle exceptions as needed
             e.printStackTrace();
         }
 
@@ -157,7 +154,6 @@ public class MuseumSchermController implements Controller {
                     }
                 });
             } catch (Exception e) {
-                // Handle exceptions as needed
                 e.printStackTrace();
             }
             return;
@@ -179,8 +175,6 @@ public class MuseumSchermController implements Controller {
 
 
         tblConfigs.getColumns().addAll(gameNameColumn,gameInstanceColumn,museumColumn);
-        // Get the selected museum
-        //Museum selectedMuseum = (Museum) tblConfigs.getSelectionModel().getSelectedItem();
 
         if (selectedMuseum != null) {
             List<GameInstance> gameInstances = gameRepo.getAllGameInstancesBasedOnMuseum(selectedMuseum);

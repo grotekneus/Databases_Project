@@ -70,15 +70,7 @@ public class DonationSchermController implements Controller {
                 stage.close();
             }
         });
-        /*
-        tblConfigs.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null && state == State.Donations) {
-                btnSearchGame.setVisible(true);
-                btnRevenue.setVisible(true);
-                //btnShowPurchases.setVisible(true);
-            }
-        });
-         */
+
         tblConfigs.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         showDonations();
     }
@@ -202,12 +194,10 @@ public class DonationSchermController implements Controller {
                         throwError("Please enter an existing customerID");
                     }
                 } catch (Exception e) {
-                    // Handle exceptions as needed
                     e.printStackTrace();
                 }
             });
         } catch (Exception e) {
-            // Handle exceptions as needed
             e.printStackTrace();
         }
     }

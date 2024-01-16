@@ -16,7 +16,7 @@ public class ConsoleGenreRepositoryJpaImpl {
     public String[] getAllConsoleNames(){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Console.class);
-        var root = query.from(Console.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Console.class);
         var list = entityManager.createQuery(query).getResultList();
         String[] results = new String[list.size()];
         for(int i = 0; i< list.size(); i++){
@@ -27,7 +27,7 @@ public class ConsoleGenreRepositoryJpaImpl {
     public Console getConsole(String s){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Console.class);
-        var root = query.from(Console.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Console.class);
         query.where(criteriaBuilder.equal(root.get("name"),s));
         return entityManager.createQuery(query).getSingleResult();
     }
@@ -35,14 +35,14 @@ public class ConsoleGenreRepositoryJpaImpl {
     public Genre getGenre(String s){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Genre.class);
-        var root = query.from(Genre.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Genre.class);
         query.where(criteriaBuilder.equal(root.get("description"),s));
         return entityManager.createQuery(query).getSingleResult();
     }
     public String[] getAllGenreNames() {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Genre.class);
-        var root = query.from(Genre.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Genre.class);
         var list = entityManager.createQuery(query).getResultList();
         String[] results = new String[list.size()];
         for(int i = 0; i< list.size(); i++){
@@ -53,13 +53,13 @@ public class ConsoleGenreRepositoryJpaImpl {
     public List<Genre> getAllGenres(){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Genre.class);
-        var root = query.from(Genre.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Genre.class);
         return entityManager.createQuery(query).getResultList();
     }
     public List<Console> getAllConsoles() {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Console.class);
-        var root = query.from(Console.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Console.class);
         return entityManager.createQuery(query).getResultList();
     }
 

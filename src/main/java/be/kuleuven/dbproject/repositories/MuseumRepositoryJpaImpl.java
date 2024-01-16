@@ -24,9 +24,6 @@ public class MuseumRepositoryJpaImpl {
         }
         return results;
     }
-
-
-
     public List<Museum> getMuseums(){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Museum.class);
@@ -55,8 +52,6 @@ public class MuseumRepositoryJpaImpl {
         } catch (javax.persistence.NoResultException e) {
             return null;
         }
-
-        //return entityManager.createQuery(query).getSingleResult();
     }
 
 
