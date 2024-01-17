@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="db_taak">
+    <output-path>$PROJECT_DIR$/out/artifacts/db_taak</output-path>
+    <root id="archive" name="db_taak.jar" />
+  </artifact>
+</component>

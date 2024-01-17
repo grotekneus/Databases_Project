@@ -2,7 +2,6 @@ package be.kuleuven.dbproject.controller;
 
 import be.kuleuven.dbproject.domain.Customer;
 import be.kuleuven.dbproject.domain.Donation;
-import be.kuleuven.dbproject.domain.Museum;
 import be.kuleuven.dbproject.repositories.CustomerRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.DonationRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -19,15 +18,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import java.time.format.DateTimeFormatter;
-public class DonationSchermController implements Controller {
-    public enum State {
-        Customers,
-        Donations
-    }
+public class DonationSchermController {
 
-    @FXML
-    private Button btnEdit;
     @FXML
     private Button btnFilterByPrice;
     @FXML
@@ -40,7 +32,6 @@ public class DonationSchermController implements Controller {
     private TableView tblConfigs;
     private EntityManager entityManager;
     private Donation selectedDonation;
-    private State state = State.Donations;
     private DonationRepositoryJpaImpl donationRepo;
     private CustomerRepositoryJpaImpl customerRepo;
 
@@ -51,24 +42,15 @@ public class DonationSchermController implements Controller {
     }
 
     public void initialize() {
-        this.state = State.Donations;
         btnAdd.setOnAction(e->{add();});
-        btnEdit.setOnAction(e->{edit();});
-        btnEdit.setVisible(false);
 
         btnFilterID.setOnAction(e -> filterByID());
         btnFilterByPrice.setOnAction(e -> filterByPrice());
 
         btnClose.setOnAction(e ->{
-            if(state != State.Donations){
-                state = state.Donations;
-                showDonations();
-            }
-            else{
-                Node source = (Node) e.getSource();
-                Stage stage = (Stage) source.getScene().getWindow();
-                stage.close();
-            }
+            Node source = (Node) e.getSource();
+            Stage stage = (Stage) source.getScene().getWindow();
+            stage.close();
         });
 
         tblConfigs.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -98,13 +80,9 @@ public class DonationSchermController implements Controller {
     private void add(){
         try{
             FXMLLoader fxmlLoader = new FXMLLoader();
-            addCustomDialogController controller = null;
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
-            switch(state){
-                case Donations:
-                    controller = new addCustomDialogController(new String[]{"amount donated","customer ID"});
-                    break;
-            }
+            addCustomDialogController controller  = new addCustomDialogController(new String[]{"amount donated","customer ID"});
+
             fxmlLoader.setController(controller);
             DialogPane pane = fxmlLoader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
@@ -114,39 +92,32 @@ public class DonationSchermController implements Controller {
             if(result.isPresent()){
                 if(result.get() == ButtonType.APPLY){
                     String[] s = controller.getInput();
-                    switch(state){
-                        case Donations:
-                            float money;
-                            try {
-                                money = Float.parseFloat(s[0]);
-                            } catch (NumberFormatException e) {
-                                throwError("Please enter a number in money");
-                                return;
-                            }
-                            LocalDate date = LocalDate.now();  // or parse the date if needed
-
-                            int customerId;
-                            try {
-                                customerId = Integer.parseInt(s[1]);
-                            } catch (NumberFormatException e) {
-                                throwError("Please enter a number in customerID");
-                                return;
-                            }
-
-                            try {
-                                Customer customer = customerRepo.getCustomerById(customerId);
-                                if (customer == null) {
-                                   throwError("Please enter existing customerID");
-                                    return;
-                                }
-
-                                Donation donation = new Donation(money, date, customer);
-                                donationRepo.addDonation(donation);
-                                showDonations();
-                            } catch (NoResultException e) {
-                                throwError("Please enter existing customerID");
-                            }
-                            break;
+                    float money;
+                    try {
+                        money = Float.parseFloat(s[0]);
+                    } catch (NumberFormatException e) {
+                        throwError("Please enter a number in money");
+                        return;
+                    }
+                    LocalDate date = LocalDate.now();
+                    int customerId;
+                    try {
+                        customerId = Integer.parseInt(s[1]);
+                    } catch (NumberFormatException e) {
+                        throwError("Please enter a number in customerID");
+                        return;
+                    }
+                    try {
+                        Customer customer = customerRepo.getCustomerById(customerId);
+                        if (customer == null) {
+                           throwError("Please enter existing customerID");
+                            return;
+                        }
+                        Donation donation = new Donation(money, date, customer);
+                        donationRepo.addDonation(donation);
+                        showDonations();
+                    } catch (NoResultException e) {
+                        throwError("Please enter existing customerID");
                     }
                 }
             }
@@ -155,9 +126,6 @@ public class DonationSchermController implements Controller {
         }
     }
 
-    private void edit(){
-
-    }
 
     private void filterByID() {
         try {

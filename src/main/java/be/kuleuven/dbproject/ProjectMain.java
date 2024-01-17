@@ -14,13 +14,6 @@ import javax.persistence.Persistence;
 import java.io.Console;
 import java.io.File;
 
-/**
- * DB Taak 2022-2023: De Vrolijke Zweters
- * Zie https://kuleuven-diepenbeek.github.io/db-course/extra/project/ voor opgave details
- *
- * Deze code is slechts een quick-start om je op weg te helpen met de integratie van JavaFX tabellen en data!
- * Zie README.md voor meer informatie.
- */
 public class ProjectMain extends Application {
 
     private static Stage rootStage;

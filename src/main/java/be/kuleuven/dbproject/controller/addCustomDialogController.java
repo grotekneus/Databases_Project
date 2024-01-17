@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class addCustomDialogController implements Controller {
+public class addCustomDialogController {
     @FXML
     private TextField textF1;
     @FXML
@@ -53,14 +53,25 @@ public class addCustomDialogController implements Controller {
 
     private String[][] cBoxItems;
 
+    /*
+        normal constructor
+     */
     public addCustomDialogController(String[] titles) {
         this.titles = titles;
     }
+
+    /*
+        constructor with current values (for example for an edit function)
+     */
     public addCustomDialogController(String[] titles, String[] members) {
         this.titles = titles;
         this.members = members;
     }
 
+
+    /*
+        constructor if you want to use a combobox
+     */
     public addCustomDialogController(boolean cbox,String[] titles,String[][] cBoxItems) {
         this.titles = titles;
         this.cbox = cbox;

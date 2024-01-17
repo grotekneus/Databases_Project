@@ -1,17 +1,14 @@
 package be.kuleuven.dbproject.controller;
 
 import be.kuleuven.dbproject.domain.Console;
-import be.kuleuven.dbproject.domain.Customer;
 import be.kuleuven.dbproject.domain.Game;
 import be.kuleuven.dbproject.domain.Genre;
 import be.kuleuven.dbproject.repositories.ConsoleGenreRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.hibernate.annotations.Tables;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -19,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AdminSchermController implements Controller {
+public class AdminSchermController {
     private EntityManager entityManager;
     private ConsoleGenreRepositoryJpaImpl cgRepo;
 
@@ -88,7 +85,7 @@ public class AdminSchermController implements Controller {
                 return;
             }
             FXMLLoader fxmlLoader = new FXMLLoader();
-            addCustomDialogController controller = null;
+            addCustomDialogController controller;
             fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
             Console console = null;
             Genre genre = null;
@@ -128,7 +125,7 @@ public class AdminSchermController implements Controller {
             }
         } catch (IOException e) {
             showAlert();
-            add();
+            edit();
         }
     }
 
@@ -184,7 +181,6 @@ public class AdminSchermController implements Controller {
     }
 
     private void initTable(Tables type) {
-        System.out.println("table initialised");
         tblConfigs.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         tblConfigs.getColumns().clear();
 
@@ -204,13 +200,9 @@ public class AdminSchermController implements Controller {
         TableColumn<Console, String> consoleIDColumn = new TableColumn<>("consoleID");
         TableColumn<Console, String> yearColumn = new TableColumn<>("year");
 
-
-
         nameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getName())));
         consoleIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getConsoleID())));
         yearColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getYear())));
-
-
 
         tblConfigs.getColumns().addAll(nameColumn,consoleIDColumn,yearColumn);
         List<Console> consoles = cgRepo.getAllConsoles();
@@ -226,35 +218,14 @@ public class AdminSchermController implements Controller {
         TableColumn<Genre, String> genreIDColumn = new TableColumn<>("GenreID");
         TableColumn<Genre, String> descriptionColumn = new TableColumn<>("description");
 
-
-
-
         genreIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGenreID())));
         descriptionColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getDescription())));
-
-
-
 
         tblConfigs.getColumns().addAll(genreIDColumn,descriptionColumn);
         List<Genre> genres = cgRepo.getAllGenres();
         tblConfigs.getItems().clear();
         for (Genre g : genres) {
             tblConfigs.getItems().add(g);
-        }
-    }
-
-
-    public void showAlert(String title, String content) {
-        var alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(title);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    private void verifyOneRowSelected() {
-        if(tblConfigs.getSelectionModel().getSelectedCells().size() == 0) {
-            showAlert("Hela!", "Eerst een record selecteren hé.");
         }
     }
 }

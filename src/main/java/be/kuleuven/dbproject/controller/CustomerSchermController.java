@@ -8,7 +8,6 @@ import be.kuleuven.dbproject.repositories.ShopItemRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
@@ -19,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class CustomerSchermController implements Controller {
+public class CustomerSchermController {
     public enum State {
         Loans,
         Customers,
@@ -157,16 +156,16 @@ public class CustomerSchermController implements Controller {
             tblConfigs.getColumns().clear();
             tblConfigs.getItems().clear();
             TableColumn<Loan, String> dateColumn = new TableColumn<>("date");
-            TableColumn<Loan, String> returneDateColumn = new TableColumn<>("return date");
+            TableColumn<Loan, String> returnDateColumn = new TableColumn<>("return date");
             TableColumn<Loan, String> customerIDColumn = new TableColumn<>("CustomerID");
             TableColumn<Loan, String> gameIDColumn = new TableColumn<>("GameID");
 
             customerIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getCustomer().getCustomerID())));
-            returneDateColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getReturned().toString()));
+            returnDateColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getReturned().toString()));
             dateColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDate().toString()));
             gameIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGameInstance().getGameInstanceID())));
 
-            tblConfigs.getColumns().addAll(dateColumn, returneDateColumn, customerIDColumn, gameIDColumn);
+            tblConfigs.getColumns().addAll(dateColumn, returnDateColumn, customerIDColumn, gameIDColumn);
             List<Loan> loans = customerRepo.getLoans(selectedCustomer);
             for (Loan loan : loans) {
                 tblConfigs.getItems().add(loan);
@@ -297,7 +296,6 @@ public class CustomerSchermController implements Controller {
                             break;
                     }
                 }
-
             }
         } catch (IOException e) {
             throwError("Please fill in all fields.");
@@ -314,7 +312,6 @@ public class CustomerSchermController implements Controller {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 addCustomDialogController controller = new addCustomDialogController(new String[]{"full name","adress","email"},
                         new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
-                var selectedItem = tblConfigs.getSelectionModel().getSelectedItem();
                 fxmlLoader.setLocation(getClass().getClassLoader().getResource("addcustomdialog.fxml"));
                 fxmlLoader.setController(controller);
                 DialogPane pane = fxmlLoader.load();
@@ -340,10 +337,8 @@ public class CustomerSchermController implements Controller {
                         throwError("please fill in all fields");
                         add();
                     }
-
                 }
             }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -386,7 +381,6 @@ public class CustomerSchermController implements Controller {
 
                 if (customer==null) {
                     throwError("No customers found with that name");
-                    return;
                 } else {
                     tblConfigs.getSelectionModel().clearSelection();
                     tblConfigs.getSelectionModel().select(customer);

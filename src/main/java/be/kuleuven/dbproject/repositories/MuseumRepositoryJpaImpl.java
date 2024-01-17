@@ -16,7 +16,7 @@ public class MuseumRepositoryJpaImpl {
     public String[] getAllMuseumAdresses() {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Museum.class);
-        var root = query.from(Museum.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Museum.class);
         var list = entityManager.createQuery(query).getResultList();
         String[] results = new String[list.size()];
         for(int i = 0; i< list.size(); i++){
@@ -27,7 +27,7 @@ public class MuseumRepositoryJpaImpl {
     public List<Museum> getMuseums(){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(Museum.class);
-        var root = query.from(Museum.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(Museum.class);
         return entityManager.createQuery(query).getResultList();
     }
     public void addMuseum(Museum m) {
@@ -53,6 +53,4 @@ public class MuseumRepositoryJpaImpl {
             return null;
         }
     }
-
-
 }

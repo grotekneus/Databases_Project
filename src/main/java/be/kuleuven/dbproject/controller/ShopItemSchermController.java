@@ -1,7 +1,6 @@
 package be.kuleuven.dbproject.controller;
 
 import be.kuleuven.dbproject.domain.*;
-import be.kuleuven.dbproject.repositories.DonationRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.MuseumRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.ShopItemRepositoryJpaImpl;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -13,11 +12,10 @@ import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public class ShopItemSchermController implements Controller {
+public class ShopItemSchermController {
 
     public enum State {
         Museums,
@@ -57,8 +55,6 @@ public class ShopItemSchermController implements Controller {
         showShopItems();
         btnAdd.setOnAction(e->{add();});
         btnEdit.setOnAction(e->{edit();});
-        //btnChangeLocation.setOnAction(e -> changeLocation());
-        //btnChangePrice.setOnAction(e -> changePrice());
         btnSearchShopItem.setOnAction(e -> searchShopItem());
 
         btnChangeLocation.setVisible(false);
@@ -78,9 +74,6 @@ public class ShopItemSchermController implements Controller {
         tblConfigs.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null && state == State.ShopItems) {
                 selectedShopItem = (ShopItem) tblConfigs.getSelectionModel().getSelectedItem();
-                //btnSearchGame.setVisible(true);
-
-                //btnShowPurchases.setVisible(true);
             }
         });
         tblConfigs.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -129,17 +122,6 @@ public class ShopItemSchermController implements Controller {
                     controller = new addCustomDialogController(true, new String[]{"addres","item type","name", "price"}
                             ,new String[][]{museumRepo.getAllMuseumAdresses(),itemTypeNames});
                     break;
-                /*case Loans:
-                    controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"});
-                    break;
-                case Purchases:
-                    controller = new addCustomDialogController(new String[]{"item type","item id"});
-                    break;
-                case Donations:
-                    controller = new addCustomDialogController(new String[]{"Money Donated"});
-                    break;
-
-                 */
             }
             fxmlLoader.setController(controller);
             DialogPane pane = fxmlLoader.load();
@@ -157,7 +139,6 @@ public class ShopItemSchermController implements Controller {
                         throwError("Please enter a number in price");
                         return;
                     }
-
                     // Check if a museum is selected
                     if (s[0] == null || s[0].isEmpty()) {
                         throwError("Please select a museum");
@@ -204,12 +185,6 @@ public class ShopItemSchermController implements Controller {
                     controller = new addCustomDialogController(true, new String[]{"addres","price"}
                             ,new String[][]{museumRepo.getAllMuseumAdresses()});
                     break;
-                /*case Games:
-                    controller = new addCustomDialogController(new String[]{"gameID","Year","Month","Day"},
-                            new String[]{selectedCustomer.getFullName(),selectedCustomer.getAddress(),selectedCustomer.getEmail()});
-                    break;
-
-                 */
             }
             fxmlLoader.setController(controller);
             DialogPane pane = fxmlLoader.load();
@@ -243,7 +218,6 @@ public class ShopItemSchermController implements Controller {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 
@@ -307,6 +281,4 @@ public class ShopItemSchermController implements Controller {
         alert.setContentText(error);
         alert.showAndWait();
     }
-
-//
 }

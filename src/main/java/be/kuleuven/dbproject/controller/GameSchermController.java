@@ -1,28 +1,21 @@
 package be.kuleuven.dbproject.controller;
 
-import be.kuleuven.dbproject.ProjectMain;
 import be.kuleuven.dbproject.domain.*;
 import be.kuleuven.dbproject.repositories.ConsoleGenreRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
 import be.kuleuven.dbproject.repositories.MuseumRepositoryJpaImpl;
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.*;
 
-public class GameSchermController implements Controller {
+public class GameSchermController {
     private final EntityManager entityManager;
     private final GameRepositoryJpaImpl gameRepo;
     @FXML
@@ -323,8 +316,6 @@ public class GameSchermController implements Controller {
 
         gameIDColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGameID())));
         nameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getName()));
-        //consoleColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getConsole().getConsoleID())));
-        //genreColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getGenres().getGenreID())));
         yearColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getYear())));
         valueColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(Float.toString(cellData.getValue().getValue())));
 

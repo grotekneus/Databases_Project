@@ -57,35 +57,38 @@ public class ProjectMainController {
     }
 
     private void showBeheerScherm(String id) {
-        var resourceName = id.toLowerCase() + "scherm.fxml";;
-        Controller controller;
-        switch(id){
-            case "customer":
-                controller = new CustomerSchermController(entityManager);
-                break;
-            case "game":
-                controller = new GameSchermController(entityManager);
-                break;
-            case "admin":
-                controller = new AdminSchermController(entityManager);
-                break;
-            case "museum":
-                controller = new MuseumSchermController(entityManager);
-                break;
-            case "donation":
-                controller = new DonationSchermController(entityManager);
-                break;
-            case "shopitem":
-                controller = new ShopItemSchermController(entityManager);
-                break;
-            default:
-                controller = new CustomerSchermController(entityManager);
-                break;
-        }
+        var resourceName = id.toLowerCase() + "scherm.fxml";
         try {
             var stage = new Stage();
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(resourceName));
-            loader.setController(controller);
+            switch(id) {
+                case "customer":
+                    CustomerSchermController customerController = new CustomerSchermController(entityManager);
+                    loader.setController(customerController);
+                    break;
+                case "game":
+                    GameSchermController gameController = new GameSchermController(entityManager);
+                    loader.setController(gameController);
+                    break;
+                case "admin":
+                    AdminSchermController adminController = new AdminSchermController(entityManager);
+                    loader.setController(adminController);
+                    break;
+                case "museum":
+                    MuseumSchermController museumController = new MuseumSchermController(entityManager);
+                    loader.setController(museumController);
+                    break;
+                case "donation":
+                    DonationSchermController donationController = new DonationSchermController(entityManager);
+                    loader.setController(donationController);
+                    break;
+                case "shopitem":
+                    ShopItemSchermController shopItemController = new ShopItemSchermController(entityManager);
+                    loader.setController(shopItemController);
+                    break;
+                default:
+                    break;
+            }
             var root = (AnchorPane) loader.load();
             var scene = new Scene(root);
             stage.setScene(scene);
@@ -97,9 +100,5 @@ public class ProjectMainController {
         } catch (Exception e) {
             throw new RuntimeException("Kan beheerscherm " + resourceName + " niet vinden", e);
         }
-    }
-
-    private void showVoegToeDialog(){
-        Dialog<Loan> dialog = new Dialog<>();
     }
 }

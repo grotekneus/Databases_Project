@@ -13,18 +13,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import be.kuleuven.dbproject.repositories.GameRepositoryJpaImpl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 
-public class MuseumSchermController implements Controller {
+public class MuseumSchermController {
 
 
     public enum State {
@@ -198,7 +195,6 @@ public class MuseumSchermController implements Controller {
                         throwError("Please select a museum to edit");
                         return;
                     }
-
                     controller = new addCustomDialogController(new String[]{"revenue","visitors"},
                             new String[]{String.valueOf(selectedMuseum.getRevenue()),String.valueOf(selectedMuseum.getVisitors()),selectedMuseum.getAddress()});
                     break;
@@ -363,6 +359,4 @@ public class MuseumSchermController implements Controller {
         alert.setContentText(error);
         alert.showAndWait();
     }
-
-
 }

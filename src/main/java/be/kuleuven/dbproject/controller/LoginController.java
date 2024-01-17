@@ -55,8 +55,8 @@ public class LoginController {
                 .setProtocol("http")
                 .setHost("127.0.0.1")
                 .setPort(5984)
-                .setUsername("user")
-                .setPassword("user")
+                .setUsername("admin")
+                .setPassword("admin")
                 .setMaxConnections(100)
                 .setConnectionTimeout(0);
         client = new CouchDbClient(properties);
@@ -123,10 +123,6 @@ public class LoginController {
         return new String(encodedBytes);
     }
 
-    private String decryptPassword(String encryptedPassword) {
-        byte[] decodedBytes = Base64.getDecoder().decode(encryptedPassword);
-        return new String(decodedBytes);
-    }
 
     private void switchToMainWindow(boolean isAdmin){
         try{

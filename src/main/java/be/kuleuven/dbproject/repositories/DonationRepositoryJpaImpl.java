@@ -40,11 +40,4 @@ public class DonationRepositoryJpaImpl {
         query.select(root).where(criteriaBuilder.greaterThanOrEqualTo(root.get("moneyDonated"), price));
         return entityManager.createQuery(query).getResultList();
     }
-
-    public void changeDonation(Donation donation, int value) {
-        entityManager.getTransaction().begin();
-        donation.setMoneyDonated(value);
-        entityManager.merge(donation);
-        entityManager.getTransaction().commit();
-    }
 }

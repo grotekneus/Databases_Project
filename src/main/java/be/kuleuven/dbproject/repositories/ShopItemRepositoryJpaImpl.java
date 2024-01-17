@@ -17,7 +17,7 @@ public class ShopItemRepositoryJpaImpl {
     public List<ShopItem> getShopItems(){
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var query = criteriaBuilder.createQuery(ShopItem.class);
-        var root = query.from(ShopItem.class); //blijkbaar selecteerd hij default de hele klasse
+        var root = query.from(ShopItem.class);
         return entityManager.createQuery(query).getResultList();
     }
 

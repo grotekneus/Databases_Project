@@ -11,10 +11,10 @@ public class Loan {
     @ManyToOne
     @JoinColumn
     private Customer customer;
-    @Id
+
     @Column
     private LocalDate date;
-
+    @Id
     @Column
     private LocalDate returned;
     public Loan(){
