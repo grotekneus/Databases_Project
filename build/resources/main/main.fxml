@@ -18,7 +18,6 @@
             <Button fx:id="Games" prefHeight="35.0" prefWidth="300.0" text="Manage games" />
             <Button fx:id="ShopItems" prefHeight="35.0" prefWidth="300.0" text="Manage shopItems" />
             <Button fx:id="Museums" prefHeight="35.0" prefWidth="300.0" text="Manage Museums" />
-            <Button fx:id="btnConfigAttaches" prefHeight="35.0" prefWidth="300.0" text="Beheer Config Attaches" />
          </children>
       </VBox>
       <VBox layoutX="400.0" layoutY="60.0" spacing="10">

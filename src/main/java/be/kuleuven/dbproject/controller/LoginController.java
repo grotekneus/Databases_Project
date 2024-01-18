@@ -55,8 +55,8 @@ public class LoginController {
                 .setProtocol("http")
                 .setHost("127.0.0.1")
                 .setPort(5984)
-                .setUsername("admin")
-                .setPassword("admin")
+                .setUsername("user")
+                .setPassword("user")
                 .setMaxConnections(100)
                 .setConnectionTimeout(0);
         client = new CouchDbClient(properties);

@@ -18,8 +18,6 @@ public class ProjectMainController {
 
 
     @FXML
-    private Button btnConfigAttaches;
-    @FXML
     private Button btnAdmin;
     @FXML
     private Button Museums;
@@ -47,7 +45,6 @@ public class ProjectMainController {
             btnAdmin.setVisible(false);
         }
 
-        btnConfigAttaches.setOnAction(e -> showBeheerScherm("attaches"));
         Customers.setOnAction(e -> showBeheerScherm("customer"));
         ShopItems.setOnAction(e -> showBeheerScherm("shopitem"));
         Games.setOnAction(e -> showBeheerScherm("game"));
